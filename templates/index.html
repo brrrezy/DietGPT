@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DietGpt - AI-Powered Diet & Fitness Recommendations</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .bg-elegant {
+            background: #0a0e1a;
+            color: #e2e8f0;
+        }
+        .card-elegant {
+            background: rgba(15, 23, 42, 0.45);
+            border: 1px solid rgba(100, 116, 139, 0.08);
+            box-shadow: 0 15px 35px rgba(2, 6, 23, 0.7);
+        }
+        .input-elegant {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(148, 163, 184, 0.15);
+            color: #e2e8f0;
+            transition: all 0.2s ease;
+        }
+        .input-elegant:focus {
+            border-color: rgba(94, 234, 212, 0.6);
+            box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.2);
+            background: rgba(15, 23, 42, 0.85);
+        }
+        .input-elegant::placeholder {
+            color: rgba(148, 163, 184, 0.7);
+        }
+        .btn-elegant {
+            background: linear-gradient(135deg, #10b981, #14b8a6);
+            border: none;
+            color: #ecfdf5;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.35);
+        }
+        .btn-elegant:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 15px 35px rgba(45, 212, 191, 0.4);
+        }
+        .badge {
+            background: rgba(16, 185, 129, 0.1);
+            color: #5eead4;
+            border: 1px solid rgba(16, 185, 129, 0.35);
+        }
+        .label-text {
+            color: #cbd5f5;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+    </style>
+</head>
+<body class="bg-elegant min-h-screen text-slate-200">
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <span class="inline-flex items-center gap-2 badge text-xs font-semibold tracking-wide uppercase px-3 py-1 rounded-full mb-3">AI Wellness</span>
+            <h1 class="text-3xl font-semibold mb-2 text-slate-100 tracking-tight">
+                DietGpt
+            </h1>
+            <p class="text-slate-500 text-sm">Homemade, low-impact nutrition & training insights</p>
+            <div class="inline-flex items-center gap-2 px-4 py-1 mt-3 text-xs rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
+                <span>♻️ Sustainable cooking focus</span>
+            </div>
+        </div>
+
+        <!-- Form Card -->
+        <div class="card-elegant rounded-2xl p-6 md:p-8">
+            <form action="/recommend" method="post" class="space-y-5">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="space-y-1.5">
+                        <label class="block text-xs label-text mb-1.5">Age</label>
+                        <input 
+                            type="number" 
+                            name="age" 
+                            required
+                            class="input-elegant w-full px-3 py-2 rounded-lg text-sm focus:outline-none"
+                            placeholder="Enter age"
+                        >
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="block text-xs label-text mb-1.5">Gender</label>
+                        <select 
+                            name="gender" 
+                            required
+                            class="input-elegant w-full px-3 py-2 rounded-lg text-sm focus:outline-none bg-transparent"
+                        >
+                            <option value="" class="bg-slate-900 text-slate-200">Select</option>
+                            <option value="male" class="bg-slate-900 text-slate-200">Male</option>
+                            <option value="female" class="bg-slate-900 text-slate-200">Female</option>
+                        </select>
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="block text-xs label-text mb-1.5">Weight (kg)</label>
+                        <input 
+                            type="number" 
+                            name="weight" 
+                            step="0.1"
+                            required
+                            class="input-elegant w-full px-3 py-2 rounded-lg text-sm focus:outline-none"
+                            placeholder="e.g., 70.5"
+                        >
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="block text-xs label-text mb-1.5">Height (ft)</label>
+                        <input 
+                            type="number" 
+                            step="0.1" 
+                            name="height" 
+                            required
+                            class="input-elegant w-full px-3 py-2 rounded-lg text-sm focus:outline-none"
+                            placeholder="e.g., 5.9"
+                        >
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="block text-xs label-text mb-1.5">Diet Preference</label>
+                        <select 
+                            name="veg_or_nonveg" 
+                            required
+                            class="input-elegant w-full px-3 py-2 rounded-lg text-sm focus:outline-none bg-transparent"
+                        >
+                            <option value="" class="bg-slate-900 text-slate-200">Select</option>
+                            <option value="veg" class="bg-slate-900 text-slate-200">Vegetarian</option>
+                            <option value="nonveg" class="bg-slate-900 text-slate-200">Non-Vegetarian</option>
+                        </select>
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="block text-xs label-text mb-1.5">Medical Conditions</label>
+                        <input 
+                            type="text" 
+                            name="disease" 
+                            class="input-elegant w-full px-3 py-2 rounded-lg text-sm focus:outline-none"
+                            placeholder="e.g., none"
+                        >
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="block text-xs label-text mb-1.5">Region</label>
+                        <input 
+                            type="text" 
+                            name="region" 
+                            required
+                            class="input-elegant w-full px-3 py-2 rounded-lg text-sm focus:outline-none"
+                            placeholder="e.g., India (Mumbai)"
+                        >
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="block text-xs label-text mb-1.5">Allergies</label>
+                        <input 
+                            type="text" 
+                            name="allergics" 
+                            class="input-elegant w-full px-3 py-2 rounded-lg text-sm focus:outline-none"
+                            placeholder="e.g., none"
+                        >
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="block text-xs label-text mb-1.5">Fitness Goal</label>
+                        <select 
+                            name="goal" 
+                            required
+                            class="input-elegant w-full px-3 py-2 rounded-lg text-sm focus:outline-none bg-transparent"
+                        >
+                            <option value="" class="bg-slate-900 text-slate-200">Select goal</option>
+                            <option value="bulk" class="bg-slate-900 text-slate-200">Bulk (Gain Muscle)</option>
+                            <option value="cut" class="bg-slate-900 text-slate-200">Cut (Lose Fat)</option>
+                            <option value="maintain" class="bg-slate-900 text-slate-200">Maintain</option>
+                        </select>
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="block text-xs label-text mb-1.5">Activity Level</label>
+                        <select 
+                            name="activity_level" 
+                            required
+                            class="input-elegant w-full px-3 py-2 rounded-lg text-sm focus:outline-none bg-transparent"
+                        >
+                            <option value="" class="bg-slate-900 text-slate-200">Select</option>
+                            <option value="sedentary" class="bg-slate-900 text-slate-200">Sedentary (Little/No exercise)</option>
+                            <option value="light" class="bg-slate-900 text-slate-200">Light (1-3 days/week)</option>
+                            <option value="moderate" class="bg-slate-900 text-slate-200">Moderate (3-5 days/week)</option>
+                            <option value="active" class="bg-slate-900 text-slate-200">Active (6-7 days/week)</option>
+                            <option value="very_active" class="bg-slate-900 text-slate-200">Very Active (2x per day)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="space-y-1.5">
+                    <label class="block text-xs label-text mb-1.5">Cuisine Preference</label>
+                    <input 
+                        type="text" 
+                        name="foodtype" 
+                        required
+                        class="input-elegant w-full px-3 py-2 rounded-lg text-sm focus:outline-none"
+                        placeholder="e.g., Italian, Indian"
+                    >
+                </div>
+
+                <div class="text-center pt-2">
+                    <button 
+                        type="submit" 
+                        class="btn-elegant px-8 py-2.5 rounded-lg text-sm font-semibold tracking-wide"
+                    >
+                        Get Recommendations
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center mt-8 text-slate-600 text-xs">
+            <p>Made in India with ❤️</p>
+        </div>
+    </div>
+</body>
+</html>
