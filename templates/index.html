@@ -72,6 +72,11 @@
 
         <!-- Form Card -->
         <div class="card-elegant rounded-2xl p-6 md:p-8">
+            {% if error %}
+            <div class="mb-4 p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-300 text-sm">
+                {{ error }}
+            </div>
+            {% endif %}
             <form action="/recommend" method="post" class="space-y-5">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="space-y-1.5">

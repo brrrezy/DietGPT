@@ -7,13 +7,20 @@ import re
 app = Flask(__name__)
 
 
-groq_api_key = os.getenv('GROQ_API_KEY', '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')
+groq_api_key = os.getenv('GROQ_API_KEY')
 
-llm_resto = ChatGroq(
-    api_key = groq_api_key,
-    model = "llama-3.3-70b-versatile",
-    temperature=0.0
-)
+# Initialize LLM only if API key is available
+llm_resto = None
+if groq_api_key:
+    try:
+        llm_resto = ChatGroq(
+            api_key = groq_api_key,
+            model = "llama-3.3-70b-versatile",
+            temperature=0.0
+        )
+    except Exception as e:
+        print(f"Error initializing ChatGroq: {str(e)}")
+        llm_resto = None
 
 prompt_template_resto = PromptTemplate(
     input_variables=['age', 'gender', 'weight', 'height', 'veg_or_nonveg', 'disease', 'region', 'allergics', 'foodtype', 'goal', 'activity_level'],
@@ -62,134 +69,149 @@ def index():
 
 @app.route('/recommend', methods = ['POST'])
 def recommend():
-    if request.method == "POST":
-        age = request.form['age']
-        gender = request.form['gender']
-        weight = request.form['weight']
-        height = request.form['height']
-        veg_or_nonveg = request.form['veg_or_nonveg']
-        disease = request.form['disease']
-        region = request.form['region']
-        allergics = request.form['allergics']
-        foodtype = request.form['foodtype']
-        goal = request.form['goal']
-        activity_level = request.form['activity_level']
+    try:
+        if request.method == "POST":
+            # Get form data with defaults to prevent KeyError
+            age = request.form.get('age', '')
+            gender = request.form.get('gender', '')
+            weight = request.form.get('weight', '')
+            height = request.form.get('height', '')
+            veg_or_nonveg = request.form.get('veg_or_nonveg', '')
+            disease = request.form.get('disease', 'none')
+            region = request.form.get('region', '')
+            allergics = request.form.get('allergics', 'none')
+            foodtype = request.form.get('foodtype', '')
+            goal = request.form.get('goal', '')
+            activity_level = request.form.get('activity_level', '')
 
+            # Validate required fields
+            if not all([age, gender, weight, height, veg_or_nonveg, region, foodtype, goal, activity_level]):
+                return render_template("index.html", error="Please fill in all required fields."), 400
 
-        chain = prompt_template_resto | llm_resto
+            # Check if LLM is initialized
+            if not llm_resto:
+                return render_template("index.html", error="API configuration error. Please contact support."), 500
 
-        input_data = {
-        'age': age,
-        'gender': gender,
-        'weight': weight,
-        'height': height,
-        'veg_or_nonveg': veg_or_nonveg,
-        'disease':disease,
-        'region': region,
-        'allergics': allergics,
-        'foodtype': foodtype,
-        'goal': goal,
-        'activity_level': activity_level
-        }
+            chain = prompt_template_resto | llm_resto
 
-        results = chain.invoke(input_data)
-        
-        
-        results_text = results.content if hasattr(results, 'content') else str(results)
+            input_data = {
+                'age': age,
+                'gender': gender,
+                'weight': weight,
+                'height': height,
+                'veg_or_nonveg': veg_or_nonveg,
+                'disease': disease,
+                'region': region,
+                'allergics': allergics,
+                'foodtype': foodtype,
+                'goal': goal,
+                'activity_level': activity_level
+            }
 
-        def clean_list(block):
-            return [line.strip("- ") for line in block.strip().split("\n") if line.strip()]
+            results = chain.invoke(input_data)
+            
+            results_text = results.content if hasattr(results, 'content') else str(results)
 
-        def extract_nutrition_stats(text):
-            """Extract nutrition statistics from the AI response"""
-            stats = {}
-            # Extract calories
-            calories_match = re.search(r'Calories:\s*([0-9,]+)', text, re.IGNORECASE)
-            if calories_match:
-                stats['calories'] = calories_match.group(1).replace(',', '')
-            
-            # Extract macros
-            protein_match = re.search(r'Protein:\s*([0-9,]+)\s*g\s*\(([0-9]+)%\)', text, re.IGNORECASE)
-            if protein_match:
-                stats['protein'] = protein_match.group(1).replace(',', '')
-                stats['protein_percent'] = protein_match.group(2)
-            
-            carbs_match = re.search(r'Carbs:\s*([0-9,]+)\s*g\s*\(([0-9]+)%\)', text, re.IGNORECASE)
-            if carbs_match:
-                stats['carbs'] = carbs_match.group(1).replace(',', '')
-                stats['carbs_percent'] = carbs_match.group(2)
-            
-            fats_match = re.search(r'Fats:\s*([0-9,]+)\s*g\s*\(([0-9]+)%\)', text, re.IGNORECASE)
-            if fats_match:
-                stats['fats'] = fats_match.group(1).replace(',', '')
-                stats['fats_percent'] = fats_match.group(2)
-            
-            # Extract other nutrients
-            fiber_match = re.search(r'Fiber:\s*([0-9,]+)\s*g', text, re.IGNORECASE)
-            if fiber_match:
-                stats['fiber'] = fiber_match.group(1).replace(',', '')
-            
-            sodium_match = re.search(r'Sodium:\s*([0-9,]+)\s*mg', text, re.IGNORECASE)
-            if sodium_match:
-                stats['sodium'] = sodium_match.group(1).replace(',', '')
-            
-            calcium_match = re.search(r'Calcium:\s*([0-9,]+)\s*mg', text, re.IGNORECASE)
-            if calcium_match:
-                stats['calcium'] = calcium_match.group(1).replace(',', '')
-            
-            iron_match = re.search(r'Iron:\s*([0-9,]+)\s*mg', text, re.IGNORECASE)
-            if iron_match:
-                stats['iron'] = iron_match.group(1).replace(',', '')
-            
-            vitd_match = re.search(r'Vitamin D:\s*([0-9,]+)\s*IU', text, re.IGNORECASE)
-            if vitd_match:
-                stats['vitamin_d'] = vitd_match.group(1).replace(',', '')
-            
-            water_match = re.search(r'Water:\s*([0-9.]+)\s*liters?', text, re.IGNORECASE)
-            if water_match:
-                stats['water'] = water_match.group(1)
-            
-            return stats
+            def clean_list(block):
+                return [line.strip("- ") for line in block.strip().split("\n") if line.strip()]
 
-        # Extract nutrition stats
-        nutrition_stats = extract_nutrition_stats(results_text)
-        
-        homemade_staples = re.findall(r'Homemade Staples:\s*(.*?)(?=\n\n|Breakfast:|$)', results_text, re.DOTALL)
-        breakfast_names = re.findall(r'Breakfast:\s*(.*?)(?=\n\n|Lunch:|$)', results_text, re.DOTALL)
-        lunch_names = re.findall(r'Lunch:\s*(.*?)(?=\n\n|Dinner:|$)', results_text, re.DOTALL)
-        dinner_names = re.findall(r'Dinner:\s*(.*?)(?=\n\n|Workouts:|$)', results_text, re.DOTALL)
-        # Try multiple patterns for workouts - more flexible matching
-        workout_names = re.findall(r'Workouts?:\s*(.*?)(?=\n\n|$)', results_text, re.DOTALL | re.IGNORECASE)
-        # If not found, try alternative patterns
-        if not workout_names:
-            workout_names = re.findall(r'Workout[s\s]*[Rr]ecommendations?:\s*(.*?)(?=\n\n|$)', results_text, re.DOTALL | re.IGNORECASE)
-        if not workout_names:
-            workout_names = re.findall(r'Exercise[s\s]*[Rr]ecommendations?:\s*(.*?)(?=\n\n|$)', results_text, re.DOTALL | re.IGNORECASE)
-        if not workout_names:
-            # Try to find any section that mentions workout or exercise
-            workout_names = re.findall(r'(?:Workout|Exercise)[s\s]*:?\s*(.*?)(?=\n\n|$)', results_text, re.DOTALL | re.IGNORECASE)
-        # Debug: print if workouts are found (can be removed later)
-        if not workout_names:
-            # Last resort: look for lines starting with "-" after "Workout" keyword anywhere
-            workout_section = re.search(r'Workout.*?(?:\n|$)(.*?)(?=\n\n|$)', results_text, re.DOTALL | re.IGNORECASE)
-            if workout_section:
-                workout_text = workout_section.group(1)
-                workout_names = [workout_text]
+            def extract_nutrition_stats(text):
+                """Extract nutrition statistics from the AI response"""
+                stats = {}
+                # Extract calories
+                calories_match = re.search(r'Calories:\s*([0-9,]+)', text, re.IGNORECASE)
+                if calories_match:
+                    stats['calories'] = calories_match.group(1).replace(',', '')
+                
+                # Extract macros
+                protein_match = re.search(r'Protein:\s*([0-9,]+)\s*g\s*\(([0-9]+)%\)', text, re.IGNORECASE)
+                if protein_match:
+                    stats['protein'] = protein_match.group(1).replace(',', '')
+                    stats['protein_percent'] = protein_match.group(2)
+                
+                carbs_match = re.search(r'Carbs:\s*([0-9,]+)\s*g\s*\(([0-9]+)%\)', text, re.IGNORECASE)
+                if carbs_match:
+                    stats['carbs'] = carbs_match.group(1).replace(',', '')
+                    stats['carbs_percent'] = carbs_match.group(2)
+                
+                fats_match = re.search(r'Fats:\s*([0-9,]+)\s*g\s*\(([0-9]+)%\)', text, re.IGNORECASE)
+                if fats_match:
+                    stats['fats'] = fats_match.group(1).replace(',', '')
+                    stats['fats_percent'] = fats_match.group(2)
+                
+                # Extract other nutrients
+                fiber_match = re.search(r'Fiber:\s*([0-9,]+)\s*g', text, re.IGNORECASE)
+                if fiber_match:
+                    stats['fiber'] = fiber_match.group(1).replace(',', '')
+                
+                sodium_match = re.search(r'Sodium:\s*([0-9,]+)\s*mg', text, re.IGNORECASE)
+                if sodium_match:
+                    stats['sodium'] = sodium_match.group(1).replace(',', '')
+                
+                calcium_match = re.search(r'Calcium:\s*([0-9,]+)\s*mg', text, re.IGNORECASE)
+                if calcium_match:
+                    stats['calcium'] = calcium_match.group(1).replace(',', '')
+                
+                iron_match = re.search(r'Iron:\s*([0-9,]+)\s*mg', text, re.IGNORECASE)
+                if iron_match:
+                    stats['iron'] = iron_match.group(1).replace(',', '')
+                
+                vitd_match = re.search(r'Vitamin D:\s*([0-9,]+)\s*IU', text, re.IGNORECASE)
+                if vitd_match:
+                    stats['vitamin_d'] = vitd_match.group(1).replace(',', '')
+                
+                water_match = re.search(r'Water:\s*([0-9.]+)\s*liters?', text, re.IGNORECASE)
+                if water_match:
+                    stats['water'] = water_match.group(1)
+                
+                return stats
 
-        homemade_staples = clean_list(homemade_staples[0]) if homemade_staples else []
-        breakfast_names = clean_list(breakfast_names[0]) if breakfast_names else []
-        lunch_names = clean_list(lunch_names[0]) if lunch_names else []
-        dinner_names = clean_list(dinner_names[0]) if dinner_names else []
-        workout_names = clean_list(workout_names[0]) if workout_names else []
+            # Extract nutrition stats
+            nutrition_stats = extract_nutrition_stats(results_text)
+            
+            homemade_staples = re.findall(r'Homemade Staples:\s*(.*?)(?=\n\n|Breakfast:|$)', results_text, re.DOTALL)
+            breakfast_names = re.findall(r'Breakfast:\s*(.*?)(?=\n\n|Lunch:|$)', results_text, re.DOTALL)
+            lunch_names = re.findall(r'Lunch:\s*(.*?)(?=\n\n|Dinner:|$)', results_text, re.DOTALL)
+            dinner_names = re.findall(r'Dinner:\s*(.*?)(?=\n\n|Workouts:|$)', results_text, re.DOTALL)
+            # Try multiple patterns for workouts - more flexible matching
+            workout_names = re.findall(r'Workouts?:\s*(.*?)(?=\n\n|$)', results_text, re.DOTALL | re.IGNORECASE)
+            # If not found, try alternative patterns
+            if not workout_names:
+                workout_names = re.findall(r'Workout[s\s]*[Rr]ecommendations?:\s*(.*?)(?=\n\n|$)', results_text, re.DOTALL | re.IGNORECASE)
+            if not workout_names:
+                workout_names = re.findall(r'Exercise[s\s]*[Rr]ecommendations?:\s*(.*?)(?=\n\n|$)', results_text, re.DOTALL | re.IGNORECASE)
+            if not workout_names:
+                # Try to find any section that mentions workout or exercise
+                workout_names = re.findall(r'(?:Workout|Exercise)[s\s]*:?\s*(.*?)(?=\n\n|$)', results_text, re.DOTALL | re.IGNORECASE)
+            # Debug: print if workouts are found (can be removed later)
+            if not workout_names:
+                # Last resort: look for lines starting with "-" after "Workout" keyword anywhere
+                workout_section = re.search(r'Workout.*?(?:\n|$)(.*?)(?=\n\n|$)', results_text, re.DOTALL | re.IGNORECASE)
+                if workout_section:
+                    workout_text = workout_section.group(1)
+                    workout_names = [workout_text]
 
-        return render_template('result.html', 
-                            homemade_staples=homemade_staples, 
-                            breakfast_names=breakfast_names, 
-                            lunch_names=lunch_names, 
-                            dinner_names=dinner_names, 
-                            workout_names=workout_names,
-                            nutrition_stats=nutrition_stats)
-    return  render_template("index.html")
+            homemade_staples = clean_list(homemade_staples[0]) if homemade_staples else []
+            breakfast_names = clean_list(breakfast_names[0]) if breakfast_names else []
+            lunch_names = clean_list(lunch_names[0]) if lunch_names else []
+            dinner_names = clean_list(dinner_names[0]) if dinner_names else []
+            workout_names = clean_list(workout_names[0]) if workout_names else []
+
+            return render_template('result.html', 
+                                homemade_staples=homemade_staples, 
+                                breakfast_names=breakfast_names, 
+                                lunch_names=lunch_names, 
+                                dinner_names=dinner_names, 
+                                workout_names=workout_names,
+                                nutrition_stats=nutrition_stats)
+    except KeyError as e:
+        return render_template("index.html", error=f"Missing required field: {str(e)}"), 400
+    except Exception as e:
+        # Log the error for debugging (in production, use proper logging)
+        print(f"Error in recommend route: {str(e)}")
+        return render_template("index.html", error="An error occurred while generating recommendations. Please try again."), 500
+    
+    return render_template("index.html")
 
 
 if __name__ == "__main__":

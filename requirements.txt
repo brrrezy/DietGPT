@@ -1,4 +1,4 @@
-langchain
-langchain-groq
-flask
+langchain>=0.1.0
+langchain-groq>=0.0.1
+flask>=2.3.0
 
