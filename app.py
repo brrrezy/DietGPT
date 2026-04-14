@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_from_directory, Response
 from langchain_core.prompts import PromptTemplate
 from langchain_groq import ChatGroq
 import os
@@ -6,6 +6,8 @@ import re
 
 app = Flask(__name__)
 
+# Set base URL for canonical tags and structured data
+BASE_URL = os.getenv('BASE_URL', 'https://getfitdiet.vercel.app')
 
 groq_api_key = os.getenv('GROQ_API_KEY')
 
@@ -65,7 +67,7 @@ prompt_template_resto = PromptTemplate(
 
 @app.route('/')
 def index():
-    return render_template("index.html")
+    return render_template("index.html", base_url=BASE_URL)
 
 @app.route('/recommend', methods = ['POST'])
 def recommend():
@@ -86,11 +88,11 @@ def recommend():
 
             # Validate required fields
             if not all([age, gender, weight, height, veg_or_nonveg, region, foodtype, goal, activity_level]):
-                return render_template("index.html", error="Please fill in all required fields."), 400
+                return render_template("index.html", error="Please fill in all required fields.", base_url=BASE_URL), 400
 
             # Check if LLM is initialized
             if not llm_resto:
-                return render_template("index.html", error="API configuration error. Please contact support."), 500
+                return render_template("index.html", error="API configuration error. Please contact support.", base_url=BASE_URL), 500
 
             chain = prompt_template_resto | llm_resto
 
@@ -203,16 +205,39 @@ def recommend():
                                 lunch_names=lunch_names, 
                                 dinner_names=dinner_names, 
                                 workout_names=workout_names,
-                                nutrition_stats=nutrition_stats)
+                                nutrition_stats=nutrition_stats,
+                                base_url=BASE_URL)
     except KeyError as e:
-        return render_template("index.html", error=f"Missing required field: {str(e)}"), 400
+        return render_template("index.html", error=f"Missing required field: {str(e)}", base_url=BASE_URL), 400
     except Exception as e:
         # Log the error for debugging (in production, use proper logging)
         print(f"Error in recommend route: {str(e)}")
-        return render_template("index.html", error="An error occurred while generating recommendations. Please try again."), 500
+        return render_template("index.html", error="An error occurred while generating recommendations. Please try again.", base_url=BASE_URL), 500
     
-    return render_template("index.html")
+    return render_template("index.html", base_url=BASE_URL)
 
+@app.route('/robots.txt')
+def robots():
+    try:
+        return send_from_directory('.', 'robots.txt', mimetype='text/plain')
+    except:
+        return Response("User-agent: *\nAllow: /\nSitemap: https://dietgpt.com/sitemap.xml", mimetype='text/plain')
+
+@app.route('/sitemap.xml')
+def sitemap():
+    try:
+        return send_from_directory('.', 'sitemap.xml', mimetype='application/xml')
+    except:
+        sitemap_content = '''<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+        <loc>https://dietgpt.com/</loc>
+        <lastmod>2024-01-15</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>1.0</priority>
+    </url>
+</urlset>'''
+        return Response(sitemap_content, mimetype='application/xml')
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -4,7 +4,7 @@ import os
 import re
 
 llm_restro = ChatGroq(
-    api_key = "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",
+    api_key = os.getenv('GROQ_API_KEY')
     model = "meta-llama/llama-4-maverick-17b-128e-instruct",
     temperature = 0.0
 )
