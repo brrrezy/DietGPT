@@ -819,8 +819,9 @@ select.ios-list-value option {
 @media (max-width: 768px) {
   .sidebar { transform: translateX(-100%); }
   .sidebar.open { transform: translateX(0); }
+  .sidebar-brand { padding-top: 76px; }
   .main-content { margin-left: 0; }
-  .page-container { padding: 48px 20px 80px; }
+  .page-container { padding: 76px 20px 80px; }
   .stats-grid { grid-template-columns: 1fr; }
 }
 
