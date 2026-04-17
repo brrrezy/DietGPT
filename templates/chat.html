@@ -12,9 +12,16 @@
     display: flex;
     flex-direction: column;
   }
+  @media (max-width: 768px) {
+    .page-container {
+      padding: 24px 16px !important;
+      height: 100dvh;
+    }
+  }
   .chat-container {
     height: 100%;
     flex: 1;
+    overflow: hidden;
   }
 </style>
 {% endblock %}

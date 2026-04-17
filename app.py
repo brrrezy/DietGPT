@@ -273,7 +273,7 @@ chat_prompt_template = PromptTemplate(
         "COMMUNICATION RULES:\n"
         "* First, meticulously review the User Profile and Today's Meals data provided below to understand their complete context.\n"
         "* Explain your reasoning clearly and friendly in simple, user-understandable terms.\n"
-        "* Keep your final answers very concise and small with point-to-point (use bullet points).\n"
+        "* Keep your final answers VERY SHORT AND CRISP CLEAR. Maximum 2-3 bullet points or maximum 50 words altogether.\n"
         "* Ensure the tone is clear, friendly, and easy to read for a client.\n"
         "* Always ground your advice based strictly on their logged metrics and goals.\n\n"
         "USER PROFILE:\n"

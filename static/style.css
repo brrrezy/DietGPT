@@ -472,13 +472,19 @@ select.ios-list-value option {
 }
 
 .chat-bubble {
-  max-width: 75%;
+  max-width: 85%;
   padding: 14px 18px;
   border-radius: 20px;
   font-size: 1.05rem;
   line-height: 1.5;
   animation: slideUp 0.3s ease;
   word-wrap: break-word;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.chat-bubble * {
+  max-width: 100%;
 }
 
 .chat-bubble p {
