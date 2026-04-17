@@ -1,11 +1,11 @@
 {% extends "base.html" %}
-{% set active_page = "new_plan" %}
-{% block title %}Plan Result — DietGPT{% endblock %}
+{% set active_page = "dashboard" %}
+{% block title %}Saved Plan — DietGPT{% endblock %}
 
 {% block content %}
 <div class="page-header animate-in">
-  <h1>Health Plan Generated</h1>
-  <p>Added to your active plans.</p>
+  <h1>Saved Plan</h1>
+  <p>{{ plan.created_at.strftime('%b %d, %Y') if plan.created_at else '' }}</p>
 </div>
 
 <!-- Nutrition Stats -->
@@ -50,46 +50,55 @@
 </div>
 {% endif %}
 
-<!-- Formatted Meal Sections (No bulky text block) -->
+<!-- Formatted Plan Section -->
 <div class="animate-in" style="animation-delay: 100ms;">
-  {% if homemade_staples %}
-  <div class="plan-data-section">
-    <h3>Staples & Prep</h3>
-    <ul>{% for item in homemade_staples %}<li>{{ item }}</li>{% endfor %}</ul>
-  </div>
-  {% endif %}
+  {% if plan.homemade_staples or plan.breakfast_names %}
+    
+    {% if plan.homemade_staples %}
+    <div class="plan-data-section">
+      <h3>Staples & Prep</h3>
+      <ul>{% for item in plan.homemade_staples %}<li>{{ item }}</li>{% endfor %}</ul>
+    </div>
+    {% endif %}
 
-  {% if breakfast_names %}
-  <div class="plan-data-section">
-    <h3>Breakfast</h3>
-    <ul>{% for item in breakfast_names %}<li>{{ item }}</li>{% endfor %}</ul>
-  </div>
-  {% endif %}
+    {% if plan.breakfast_names %}
+    <div class="plan-data-section">
+      <h3>Breakfast</h3>
+      <ul>{% for item in plan.breakfast_names %}<li>{{ item }}</li>{% endfor %}</ul>
+    </div>
+    {% endif %}
 
-  {% if lunch_names %}
-  <div class="plan-data-section">
-    <h3>Lunch</h3>
-    <ul>{% for item in lunch_names %}<li>{{ item }}</li>{% endfor %}</ul>
-  </div>
-  {% endif %}
+    {% if plan.lunch_names %}
+    <div class="plan-data-section">
+      <h3>Lunch</h3>
+      <ul>{% for item in plan.lunch_names %}<li>{{ item }}</li>{% endfor %}</ul>
+    </div>
+    {% endif %}
 
-  {% if dinner_names %}
-  <div class="plan-data-section">
-    <h3>Dinner</h3>
-    <ul>{% for item in dinner_names %}<li>{{ item }}</li>{% endfor %}</ul>
-  </div>
-  {% endif %}
+    {% if plan.dinner_names %}
+    <div class="plan-data-section">
+      <h3>Dinner</h3>
+      <ul>{% for item in plan.dinner_names %}<li>{{ item }}</li>{% endfor %}</ul>
+    </div>
+    {% endif %}
 
-  {% if workout_names %}
-  <div class="plan-data-section">
-    <h3 style="color:var(--health-indigo)">Workouts</h3>
-    <ul>{% for item in workout_names %}<li>{{ item }}</li>{% endfor %}</ul>
-  </div>
+    {% if plan.workout_names %}
+    <div class="plan-data-section">
+      <h3 style="color:var(--health-indigo)">Workouts</h3>
+      <ul>{% for item in plan.workout_names %}<li>{{ item }}</li>{% endfor %}</ul>
+    </div>
+    {% endif %}
+
+  {% else %}
+    <!-- Legacy Plan Support (for older saved plans before UI updates) -->
+    <div class="plan-data-section" style="padding: 24px;">
+      <h3 style="color:var(--text-primary); margin-bottom: 20px;">Full Plan Text</h3>
+      <div style="white-space: pre-wrap; color:var(--text-secondary); line-height: 1.6; font-size:1.05rem;">{{ plan.plan_text }}</div>
+    </div>
   {% endif %}
 </div>
 
-<div class="animate-in" style="margin-top:32px;display:flex;gap:16px; animation-delay: 150ms;">
-  <a href="/dashboard" class="btn btn-primary">Done</a>
-  <a href="/plan/new" class="btn btn-secondary">New Plan</a>
+<div class="animate-in" style="margin-top:32px; animation-delay: 150ms;">
+  <a href="/dashboard" class="btn btn-secondary">Done</a>
 </div>
 {% endblock %}

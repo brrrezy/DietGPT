@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% set active_page = "dashboard" %}
+{% block title %}Summary — DietGPT{% endblock %}
+
+{% block content %}
+<div class="page-header animate-in">
+  <h1>Summary</h1>
+  <p>{{ current_date if current_date else 'Today' }}</p>
+</div>
+
+<!-- Health Stats Rings -->
+<div class="stats-grid animate-in" style="animation-delay: 50ms;">
+  
+  <div class="stat-card">
+    <div class="stat-header">
+      <i class="ph-fill ph-flame" style="color:var(--health-red)"></i>
+      <span>Move</span>
+    </div>
+    <div class="stat-value c-cal">{{ today_calories }}</div>
+    <div class="stat-unit">/ {{ target_calories if target_calories else '--' }} kcal</div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-header">
+      <i class="ph-fill ph-barbell" style="color:var(--health-green)"></i>
+      <span>Protein</span>
+    </div>
+    <div class="stat-value c-pro">{{ today_protein }}<span class="stat-unit">g</span></div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-header">
+      <i class="ph-fill ph-drop" style="color:var(--health-cyan)"></i>
+      <span>Carbs</span>
+    </div>
+    <div class="stat-value c-car">{{ today_carbs }}<span class="stat-unit">g</span></div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-header">
+      <i class="ph-fill ph-circle" style="color:var(--health-orange)"></i>
+      <span>Fats</span>
+    </div>
+    <div class="stat-value c-fat">{{ today_fats }}<span class="stat-unit">g</span></div>
+  </div>
+
+</div>
+
+<!-- Activity Bar -->
+{% if target_calories %}
+<div class="progress-container animate-in" style="animation-delay: 100ms;">
+  <div class="progress-header">
+    <span>Calories</span>
+    <span class="val">{{ today_calories }} / {{ target_calories }} kcal</span>
+  </div>
+  <div class="progress-bar">
+    <div class="progress-fill" style="width:{{ [((today_calories / target_calories) * 100)|round|int, 100]|min }}%"></div>
+  </div>
+</div>
+{% endif %}
+
+<!-- Today's Meals -->
+<div class="section-title animate-in" style="animation-delay: 150ms;">Today's Log</div>
+{% if today_logs %}
+<div class="meal-timeline animate-in" style="animation-delay: 180ms;">
+  {% for log in today_logs %}
+  <div class="meal-entry">
+    <div class="meal-icon">
+      {% if log.meal_type == 'breakfast' %}<i class="ph-fill ph-sunrise"></i>
+      {% elif log.meal_type == 'lunch' %}<i class="ph-fill ph-sun"></i>
+      {% elif log.meal_type == 'dinner' %}<i class="ph-fill ph-moon-stars"></i>
+      {% else %}<i class="ph-fill ph-apple-logo"></i>{% endif %}
+    </div>
+    <div class="meal-details">
+      <div class="meal-name">{{ log.description }}</div>
+      <div class="meal-meta">{{ log.meal_type|title }}{% if log.protein %} · {{ log.protein }}g P{% endif %}</div>
+    </div>
+    <div class="meal-calories">{{ log.calories }} kcal</div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="card animate-in" style="text-align:center; padding: 40px; color:var(--text-secondary); animation-delay: 180ms;">
+  <p>No activity logged today.</p>
+  <a href="/logger" class="btn btn-secondary" style="margin-top:16px;">Log Meal</a>
+</div>
+{% endif %}
+
+<!-- Saved Plans -->
+<div class="section-title animate-in" style="margin-top:40px; animation-delay: 200ms;">Active Plans</div>
+{% if plans %}
+<div class="plans-grid animate-in" style="animation-delay: 250ms;">
+  {% for plan in plans %}
+  <a href="/plan/{{ plan.id }}" class="plan-card">
+    <div class="plan-date">{{ plan.created_at.strftime('%b %d, %Y') if plan.created_at else '' }}</div>
+    <div class="plan-cal">
+      {% if plan.nutrition_stats and plan.nutrition_stats.calories %}{{ plan.nutrition_stats.calories }} kcal{% else %}Diet Plan{% endif %}
+    </div>
+    {% if plan.nutrition_stats %}
+    <div class="plan-macros">
+      {% if plan.nutrition_stats.protein %}<span style="color:var(--health-green)">{{ plan.nutrition_stats.protein }}g P</span>{% endif %}
+      {% if plan.nutrition_stats.carbs %}<span style="color:var(--health-cyan)">{{ plan.nutrition_stats.carbs }}g C</span>{% endif %}
+      {% if plan.nutrition_stats.fats %}<span style="color:var(--health-orange)">{{ plan.nutrition_stats.fats }}g F</span>{% endif %}
+    </div>
+    {% endif %}
+  </a>
+  {% endfor %}
+</div>
+{% else %}
+<div class="card animate-in" style="text-align:center; padding: 40px; color:var(--text-secondary); animation-delay: 250ms;">
+  <p>No active plans.</p>
+  <a href="/plan/new" class="btn btn-primary" style="margin-top:16px;">Create Plan</a>
+</div>
+{% endif %}
+{% endblock %}

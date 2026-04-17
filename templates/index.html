@@ -1,804 +1,110 @@
-<!DOCTYPE html>
-<html lang="en" itemscope itemtype="https://schema.org/WebApplication">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- Primary Meta Tags -->
-    <title>Free AI Diet Plan Generator | Personalized Meal Plans & Workout Routines | DietGpt</title>
-    <meta name="title" content="Free AI Diet Plan Generator | Personalized Meal Plans & Workout Routines | DietGpt">
-    <meta name="description" content="Get free personalized diet plans and workout routines powered by AI. 100% homemade meal plans, sustainable nutrition, and fitness recommendations tailored to your goals. Create your custom diet plan in seconds - completely free!">
-    <meta name="keywords" content="diet plan generator, AI diet plan, personalized meal plan, free diet plan, workout routine, nutrition plan, meal planning, fitness plan, weight loss diet, muscle gain diet, healthy meal plan, sustainable diet, homemade meal plan, calorie calculator, macro calculator, diet planner, meal prep, fitness coach, nutritionist, Indian diet plan, vegetarian diet plan">
-    <meta name="author" content="DietGpt">
-    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
-    <meta name="language" content="English">
-    <meta name="revisit-after" content="7 days">
-    <link rel="canonical" href="https://dietgpt.com/">
-    
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://dietgpt.com/">
-    <meta property="og:title" content="Free AI Diet Plan Generator | Personalized Meal Plans & Workout Routines">
-    <meta property="og:description" content="Get free personalized diet plans and workout routines powered by AI. 100% homemade, sustainable, and science-backed nutrition plans tailored to your goals.">
-    <meta property="og:image" content="https://dietgpt.com/og-image.jpg">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:site_name" content="DietGpt">
-    <meta property="og:locale" content="en_US">
-    
-    <!-- Twitter -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:url" content="https://dietgpt.com/">
-    <meta name="twitter:title" content="Free AI Diet Plan Generator | Personalized Meal Plans">
-    <meta name="twitter:description" content="Get free personalized diet plans and workout routines powered by AI. 100% homemade, sustainable nutrition plans.">
-    <meta name="twitter:image" content="https://dietgpt.com/twitter-image.jpg">
-    <meta name="twitter:creator" content="@dietgpt">
-    
-    <!-- Additional SEO Meta Tags -->
-    <meta name="theme-color" content="#10b981">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="DietGpt">
-    <meta name="application-name" content="DietGpt">
-    <meta name="msapplication-TileColor" content="#10b981">
-    <meta name="msapplication-config" content="/browserconfig.xml">
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Structured Data (JSON-LD) -->
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "WebApplication",
-        "name": "DietGpt",
-        "url": "https://dietgpt.com",
-        "applicationCategory": "HealthApplication",
-        "operatingSystem": "Web",
-        "offers": {
-            "@type": "Offer",
-            "price": "0",
-            "priceCurrency": "USD"
-        },
-        "aggregateRating": {
-            "@type": "AggregateRating",
-            "ratingValue": "4.8",
-            "ratingCount": "1250",
-            "bestRating": "5",
-            "worstRating": "1"
-        },
-        "description": "Free AI-powered diet plan generator that creates personalized meal plans and workout routines. Get customized nutrition plans based on your goals, preferences, and lifestyle.",
-        "featureList": [
-            "AI-Powered Diet Plan Generation",
-            "Personalized Meal Plans",
-            "Workout Routine Recommendations",
-            "Macro Calculator",
-            "Sustainable Nutrition Plans",
-            "100% Homemade Meal Suggestions",
-            "Free to Use"
-        ],
-        "screenshot": "https://dietgpt.com/screenshot.jpg",
-        "softwareVersion": "1.0",
-        "releaseNotes": "AI-powered personalized diet and fitness plans"
-    }
-    </script>
-    
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "SoftwareApplication",
-        "name": "DietGpt",
-        "applicationCategory": "HealthApplication",
-        "operatingSystem": "Web Browser",
-        "offers": {
-            "@type": "Offer",
-            "price": "0",
-            "priceCurrency": "USD"
-        },
-        "aggregateRating": {
-            "@type": "AggregateRating",
-            "ratingValue": "4.8",
-            "reviewCount": "1250"
-        },
-        "description": "Free AI diet plan generator for personalized nutrition and fitness plans"
-    }
-    </script>
-    
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "Organization",
-        "name": "DietGpt",
-        "url": "https://dietgpt.com",
-        "logo": "https://dietgpt.com/logo.png",
-        "description": "AI-powered diet plan and fitness recommendation platform",
-        "sameAs": [
-            "https://twitter.com/dietgpt",
-            "https://facebook.com/dietgpt"
-        ],
-        "contactPoint": {
-            "@type": "ContactPoint",
-            "contactType": "Customer Support",
-            "email": "support@dietgpt.com"
-        }
-    }
-    </script>
-    
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        "mainEntity": [{
-            "@type": "Question",
-            "name": "Is DietGpt free to use?",
-            "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "Yes, DietGpt is completely free to use. You can generate unlimited personalized diet plans and workout routines at no cost."
-            }
-        }, {
-            "@type": "Question",
-            "name": "How does the AI diet plan generator work?",
-            "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "Our AI analyzes your personal information including age, weight, height, fitness goals, dietary preferences, and activity level to create a customized diet plan with specific meal recommendations and workout routines."
-            }
-        }, {
-            "@type": "Question",
-            "name": "Are the meal plans suitable for vegetarians?",
-            "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "Yes, DietGpt supports both vegetarian and non-vegetarian meal plans. You can specify your dietary preference when creating your plan."
-            }
-        }, {
-            "@type": "Question",
-            "name": "Do I need to create an account?",
-            "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "No, you don't need to create an account. DietGpt is free to use without any registration required."
-            }
-        }, {
-            "@type": "Question",
-            "name": "Are the meal plans homemade?",
-            "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "Yes, all meal recommendations are designed for home cooking. We focus on simple, homemade meals with easy preparation methods and do not recommend restaurants or packaged foods."
-            }
-        }]
-    }
-    </script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-        
-        * {
-            font-family: 'Inter', sans-serif;
-        }
-        
-        body {
-            background: linear-gradient(135deg, #0a0e1a 0%, #1a1f2e 100%);
-            min-height: 100vh;
-        }
-        
-        .gradient-bg {
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);
-        }
-        
-        .card-premium {
-            background: rgba(15, 23, 42, 0.7);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(148, 163, 184, 0.1);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-        }
-        
-        .input-elegant {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(148, 163, 184, 0.15);
-            color: #e2e8f0;
-            transition: all 0.3s ease;
-        }
-        
-        .input-elegant:focus {
-            border-color: rgba(94, 234, 212, 0.6);
-            box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.2);
-            background: rgba(15, 23, 42, 0.85);
-            transform: translateY(-1px);
-        }
-        
-        .input-elegant::placeholder {
-            color: rgba(148, 163, 184, 0.7);
-        }
-        
-        .btn-elegant {
-            background: linear-gradient(135deg, #10b981, #14b8a6);
-            border: none;
-            color: #ecfdf5;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.35);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .btn-elegant::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.2);
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
-        }
-        
-        .btn-elegant:hover::before {
-            width: 300px;
-            height: 300px;
-        }
-        
-        .btn-elegant:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 40px rgba(45, 212, 191, 0.5);
-        }
-        
-        .btn-elegant:active {
-            transform: translateY(0);
-        }
-        
-        .badge-premium {
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(59, 130, 246, 0.2));
-            border: 1px solid rgba(94, 234, 212, 0.3);
-            backdrop-filter: blur(10px);
-        }
-        
-        .feature-card {
-            background: rgba(15, 23, 42, 0.5);
-            border: 1px solid rgba(148, 163, 184, 0.1);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .feature-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, #10b981, #3b82f6, #8b5cf6);
-            transform: scaleX(0);
-            transition: transform 0.3s ease;
-        }
-        
-        .feature-card:hover::before {
-            transform: scaleX(1);
-        }
-        
-        .feature-card:hover {
-            background: rgba(15, 23, 42, 0.7);
-            border-color: rgba(94, 234, 212, 0.3);
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.2);
-        }
-        
-        .gradient-text {
-            background: linear-gradient(135deg, #5eead4, #3b82f6, #8b5cf6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .icon-glow {
-            filter: drop-shadow(0 0 10px rgba(94, 234, 212, 0.5));
-        }
-        
-        .pulse-animation {
-            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.7;
-            }
-        }
-        
-        .fade-in {
-            animation: fadeIn 0.8s ease-in;
-        }
-        
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .slide-in {
-            animation: slideIn 0.6s ease-out;
-        }
-        
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateX(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-        
-        .label-text {
-            color: #cbd5f5;
-            font-weight: 600;
-            letter-spacing: 0.02em;
-        }
-        
-        .form-section {
-            transition: all 0.3s ease;
-        }
-        
-        .form-section:hover {
-            transform: translateY(-2px);
-        }
-        
-        .stat-number {
-            background: linear-gradient(135deg, #5eead4, #3b82f6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-    </style>
-</head>
-<body class="min-h-screen text-slate-200">
-    <main class="container mx-auto px-4 py-8 max-w-7xl">
-        <!-- Hero Section -->
-        <header class="text-center mb-12 fade-in" itemscope itemtype="https://schema.org/WebPage">
-            <div class="flex justify-center items-center gap-3 mb-4 flex-wrap">
-                <div class="badge-premium px-4 py-1.5 rounded-full text-xs font-semibold tracking-wide uppercase">
-                    <i class="fas fa-robot mr-2"></i>AI-Powered
-                </div>
-                <div class="badge-premium px-4 py-1.5 rounded-full text-xs font-semibold tracking-wide uppercase">
-                    <i class="fas fa-leaf mr-2"></i>100% Sustainable
-                </div>
-                <div class="badge-premium px-4 py-1.5 rounded-full text-xs font-semibold tracking-wide uppercase">
-                    <i class="fas fa-home mr-2"></i>Homemade Only
-                </div>
-            </div>
-            
-            <h1 class="text-5xl md:text-6xl font-bold mb-4 gradient-text tracking-tight" itemprop="headline">
-                Free AI Diet Plan Generator - Personalized Meal Plans & Workout Routines
-            </h1>
-            <h2 class="text-3xl md:text-4xl font-semibold mb-3 text-slate-100">
-                Transform Your Health with AI-Powered Nutrition
-            </h2>
-            <p class="text-lg text-slate-400 mb-6 max-w-2xl mx-auto" itemprop="description">
-                Get personalized diet plans and workout routines tailored to your goals, preferences, and lifestyle. 
-                <span class="text-emerald-400 font-semibold">100% homemade, sustainable, and science-backed.</span>
-                Create your free custom meal plan with our AI-powered diet generator. Perfect for weight loss, muscle gain, or maintaining a healthy lifestyle. All meal plans include specific quantities, macro breakdowns, and homemade preparation instructions.
-            </p>
-            
-            <div class="flex justify-center items-center gap-6 mb-8 flex-wrap">
-                <div class="text-center">
-                    <div class="text-3xl font-bold stat-number">10K+</div>
-                    <div class="text-xs text-slate-400 mt-1">Plans Created</div>
-                </div>
-                <div class="w-px h-12 bg-slate-700"></div>
-                <div class="text-center">
-                    <div class="text-3xl font-bold stat-number">100%</div>
-                    <div class="text-xs text-slate-400 mt-1">Homemade</div>
-                </div>
-                <div class="w-px h-12 bg-slate-700"></div>
-                <div class="text-center">
-                    <div class="text-3xl font-bold stat-number">24/7</div>
-                    <div class="text-xs text-slate-400 mt-1">AI Support</div>
-                </div>
-            </div>
-        </div>
+{% extends "base.html" %}
+{% set active_page = "new_plan" %}
+{% block title %}New Plan — DietGPT{% endblock %}
 
-        <!-- Unique Selling Points -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 fade-in">
-            <div class="feature-card rounded-2xl p-6 text-center">
-                <div class="w-16 h-16 rounded-2xl bg-emerald-500/20 flex items-center justify-center mx-auto mb-4 icon-glow">
-                    <i class="fas fa-home text-3xl text-emerald-400"></i>
-                </div>
-                <h3 class="text-xl font-bold text-slate-200 mb-2">100% Homemade</h3>
-                <p class="text-sm text-slate-400 leading-relaxed">
-                    No restaurants, no takeout, no packaged meals. Every recommendation is designed for home cooking with simple, real ingredients.
-                </p>
-            </div>
-            
-            <div class="feature-card rounded-2xl p-6 text-center">
-                <div class="w-16 h-16 rounded-2xl bg-blue-500/20 flex items-center justify-center mx-auto mb-4 icon-glow">
-                    <i class="fas fa-leaf text-3xl text-blue-400"></i>
-                </div>
-                <h3 class="text-xl font-bold text-slate-200 mb-2">Eco-Conscious</h3>
-                <p class="text-sm text-slate-400 leading-relaxed">
-                    Sustainable cooking with minimal waste, seasonal ingredients, and eco-friendly practices. Good for you, good for the planet.
-                </p>
-            </div>
-            
-            <div class="feature-card rounded-2xl p-6 text-center">
-                <div class="w-16 h-16 rounded-2xl bg-purple-500/20 flex items-center justify-center mx-auto mb-4 icon-glow">
-                    <i class="fas fa-dumbbell text-3xl text-purple-400"></i>
-                </div>
-                <h3 class="text-xl font-bold text-slate-200 mb-2">Goal-Focused</h3>
-                <p class="text-sm text-slate-400 leading-relaxed">
-                    Tailored macros and workouts specifically designed for your fitness goals—whether it's bulking, cutting, or maintaining.
-                </p>
-            </div>
-        </div>
+{% block content %}
+<div class="page-header animate-in">
+  <h1>New Plan</h1>
+  <p>Generate a customized, data-driven diet plan.</p>
+</div>
 
-        <!-- Main Form Card -->
-        <div class="card-premium rounded-2xl p-8 md:p-10 mb-12 fade-in">
-            <div class="text-center mb-8">
-                <h2 class="text-3xl font-bold text-slate-100 mb-2">
-                    <i class="fas fa-clipboard-list text-emerald-400 mr-2"></i>Create Your Plan
-                </h2>
-                <p class="text-slate-400">Tell us about yourself and we'll create a personalized plan just for you</p>
-            </div>
-            
-            {% if error %}
-            <div class="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-300 text-sm flex items-center gap-2">
-                <i class="fas fa-exclamation-circle"></i>
-                <span>{{ error }}</span>
-            </div>
-            {% endif %}
-            
-            <form action="/recommend" method="post" class="space-y-6">
-                <!-- Personal Information Section -->
-                <div class="border-b border-slate-700/50 pb-6">
-                    <h3 class="text-lg font-semibold text-slate-200 mb-4 flex items-center gap-2">
-                        <i class="fas fa-user text-emerald-400"></i>
-                        Personal Information
-                    </h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="form-section space-y-2">
-                            <label class="block text-sm label-text">
-                                <i class="fas fa-birthday-cake text-xs mr-1 text-slate-500"></i>Age
-                            </label>
-                            <input 
-                                type="number" 
-                                name="age" 
-                                required
-                                min="1"
-                                max="120"
-                                class="input-elegant w-full px-4 py-3 rounded-lg text-sm focus:outline-none"
-                                placeholder="Enter your age"
-                            >
-                        </div>
+{% if error %}
+<div class="alert alert-error animate-in">
+  <i class="ph-fill ph-warning-circle"></i> {{ error }}
+</div>
+{% endif %}
 
-                        <div class="form-section space-y-2">
-                            <label class="block text-sm label-text">
-                                <i class="fas fa-venus-mars text-xs mr-1 text-slate-500"></i>Gender
-                            </label>
-                            <select 
-                                name="gender" 
-                                required
-                                class="input-elegant w-full px-4 py-3 rounded-lg text-sm focus:outline-none"
-                            >
-                                <option value="" class="bg-slate-900 text-slate-200">Select gender</option>
-                                <option value="male" class="bg-slate-900 text-slate-200">Male</option>
-                                <option value="female" class="bg-slate-900 text-slate-200">Female</option>
-                            </select>
-                        </div>
+<form action="/recommend" method="post" id="plan-form" class="animate-in" style="max-width: 600px; margin: 0 auto; animation-delay: 50ms;">
+  
+  <div class="section-title">Personal Metrics</div>
+  <div class="ios-list">
+    <div class="ios-list-item">
+      <div class="ios-list-label">Age</div>
+      <input name="age" type="number" class="ios-list-value" placeholder="Required" required value="{{ profile.get('age', '') if profile else '' }}">
+    </div>
+    <div class="ios-list-item">
+      <div class="ios-list-label">Gender</div>
+      <select name="gender" class="ios-list-value" required>
+        <option value="">Select</option>
+        <option value="male" {% if profile and profile.get('gender') == 'male' %}selected{% endif %}>Male</option>
+        <option value="female" {% if profile and profile.get('gender') == 'female' %}selected{% endif %}>Female</option>
+      </select>
+    </div>
+    <div class="ios-list-item">
+      <div class="ios-list-label">Weight (kg)</div>
+      <input name="weight" type="number" step="0.1" class="ios-list-value" placeholder="Required" required value="{{ profile.get('weight', '') if profile else '' }}">
+    </div>
+    <div class="ios-list-item">
+      <div class="ios-list-label">Height (ft)</div>
+      <input name="height" type="number" step="0.1" class="ios-list-value" placeholder="Required" required value="{{ profile.get('height', '') if profile else '' }}">
+    </div>
+  </div>
 
-                        <div class="form-section space-y-2">
-                            <label class="block text-sm label-text">
-                                <i class="fas fa-weight text-xs mr-1 text-slate-500"></i>Weight (kg)
-                            </label>
-                            <input 
-                                type="number" 
-                                name="weight" 
-                                step="0.1"
-                                required
-                                min="1"
-                                class="input-elegant w-full px-4 py-3 rounded-lg text-sm focus:outline-none"
-                                placeholder="e.g., 70.5"
-                            >
-                        </div>
+  <div class="section-title">Goals</div>
+  <div class="ios-list">
+    <div class="ios-list-item">
+      <div class="ios-list-label">Goal</div>
+      <select name="goal" class="ios-list-value" required>
+        <option value="">Select</option>
+        <option value="bulk" {% if profile and profile.get('goal') == 'bulk' %}selected{% endif %}>Bulk</option>
+        <option value="cut" {% if profile and profile.get('goal') == 'cut' %}selected{% endif %}>Cut</option>
+        <option value="maintain" {% if profile and profile.get('goal') == 'maintain' %}selected{% endif %}>Maintain</option>
+      </select>
+    </div>
+    <div class="ios-list-item">
+      <div class="ios-list-label">Activity Level</div>
+      <select name="activity_level" class="ios-list-value" required>
+        <option value="">Select</option>
+        <option value="sedentary" {% if profile and profile.get('activity_level') == 'sedentary' %}selected{% endif %}>Sedentary</option>
+        <option value="light" {% if profile and profile.get('activity_level') == 'light' %}selected{% endif %}>Light</option>
+        <option value="moderate" {% if profile and profile.get('activity_level') == 'moderate' %}selected{% endif %}>Moderate</option>
+        <option value="active" {% if profile and profile.get('activity_level') == 'active' %}selected{% endif %}>Active</option>
+        <option value="very_active" {% if profile and profile.get('activity_level') == 'very_active' %}selected{% endif %}>Very Active</option>
+      </select>
+    </div>
+  </div>
 
-                        <div class="form-section space-y-2">
-                            <label class="block text-sm label-text">
-                                <i class="fas fa-ruler-vertical text-xs mr-1 text-slate-500"></i>Height (ft)
-                            </label>
-                            <input 
-                                type="number" 
-                                step="0.1" 
-                                name="height" 
-                                required
-                                min="1"
-                                class="input-elegant w-full px-4 py-3 rounded-lg text-sm focus:outline-none"
-                                placeholder="e.g., 5.9"
-                            >
-                        </div>
-                    </div>
-                </div>
+  <div class="section-title">Preferences</div>
+  <div class="ios-list">
+    <div class="ios-list-item">
+      <div class="ios-list-label">Diet Type</div>
+      <select name="veg_or_nonveg" class="ios-list-value" required>
+        <option value="">Select</option>
+        <option value="veg" {% if profile and profile.get('diet_pref') == 'veg' %}selected{% endif %}>Vegetarian</option>
+        <option value="nonveg" {% if profile and profile.get('diet_pref') == 'nonveg' %}selected{% endif %}>Non-Vegetarian</option>
+      </select>
+    </div>
+    <div class="ios-list-item">
+      <div class="ios-list-label">Region</div>
+      <input name="region" class="ios-list-value" placeholder="Required" required value="{{ profile.get('region', '') if profile else '' }}">
+    </div>
+    <div class="ios-list-item">
+      <div class="ios-list-label">Cuisine Preference</div>
+      <input name="foodtype" class="ios-list-value" placeholder="Required" required>
+    </div>
+    <div class="ios-list-item">
+      <div class="ios-list-label">Medical Conditions</div>
+      <input name="disease" class="ios-list-value" placeholder="None" value="none">
+    </div>
+    <div class="ios-list-item">
+      <div class="ios-list-label">Allergies</div>
+      <input name="allergics" class="ios-list-value" placeholder="None" value="{{ profile.get('allergies', 'none') if profile else 'none' }}">
+    </div>
+  </div>
 
-                <!-- Diet & Health Section -->
-                <div class="border-b border-slate-700/50 pb-6">
-                    <h3 class="text-lg font-semibold text-slate-200 mb-4 flex items-center gap-2">
-                        <i class="fas fa-heart text-emerald-400"></i>
-                        Diet & Health Preferences
-                    </h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="form-section space-y-2">
-                            <label class="block text-sm label-text">
-                                <i class="fas fa-seedling text-xs mr-1 text-slate-500"></i>Diet Preference
-                            </label>
-                            <select 
-                                name="veg_or_nonveg" 
-                                required
-                                class="input-elegant w-full px-4 py-3 rounded-lg text-sm focus:outline-none"
-                            >
-                                <option value="" class="bg-slate-900 text-slate-200">Select preference</option>
-                                <option value="veg" class="bg-slate-900 text-slate-200">Vegetarian</option>
-                                <option value="nonveg" class="bg-slate-900 text-slate-200">Non-Vegetarian</option>
-                            </select>
-                        </div>
+  <button type="submit" class="btn btn-primary btn-block" style="margin-top:24px;" id="submit-btn">
+    <span id="submit-text">Generate Neural Plan</span>
+  </button>
+</form>
+{% endblock %}
 
-                        <div class="form-section space-y-2">
-                            <label class="block text-sm label-text">
-                                <i class="fas fa-notes-medical text-xs mr-1 text-slate-500"></i>Medical Conditions
-                            </label>
-                            <input 
-                                type="text" 
-                                name="disease" 
-                                class="input-elegant w-full px-4 py-3 rounded-lg text-sm focus:outline-none"
-                                placeholder="e.g., none, diabetes, etc."
-                            >
-                        </div>
-
-                        <div class="form-section space-y-2">
-                            <label class="block text-sm label-text">
-                                <i class="fas fa-map-marker-alt text-xs mr-1 text-slate-500"></i>Region
-                            </label>
-                            <input 
-                                type="text" 
-                                name="region" 
-                                required
-                                class="input-elegant w-full px-4 py-3 rounded-lg text-sm focus:outline-none"
-                                placeholder="e.g., India (Mumbai)"
-                            >
-                        </div>
-
-                        <div class="form-section space-y-2">
-                            <label class="block text-sm label-text">
-                                <i class="fas fa-exclamation-triangle text-xs mr-1 text-slate-500"></i>Allergies
-                            </label>
-                            <input 
-                                type="text" 
-                                name="allergics" 
-                                class="input-elegant w-full px-4 py-3 rounded-lg text-sm focus:outline-none"
-                                placeholder="e.g., none, peanuts, dairy, etc."
-                            >
-                        </div>
-
-                        <div class="form-section space-y-2 md:col-span-2">
-                            <label class="block text-sm label-text">
-                                <i class="fas fa-utensils text-xs mr-1 text-slate-500"></i>Cuisine Preference
-                            </label>
-                            <input 
-                                type="text" 
-                                name="foodtype" 
-                                required
-                                class="input-elegant w-full px-4 py-3 rounded-lg text-sm focus:outline-none"
-                                placeholder="e.g., Italian, Indian, Mediterranean, etc."
-                            >
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Fitness Goals Section -->
-                <div>
-                    <h3 class="text-lg font-semibold text-slate-200 mb-4 flex items-center gap-2">
-                        <i class="fas fa-bullseye text-emerald-400"></i>
-                        Fitness Goals
-                    </h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="form-section space-y-2">
-                            <label class="block text-sm label-text">
-                                <i class="fas fa-flag-checkered text-xs mr-1 text-slate-500"></i>Fitness Goal
-                            </label>
-                            <select 
-                                name="goal" 
-                                required
-                                class="input-elegant w-full px-4 py-3 rounded-lg text-sm focus:outline-none"
-                            >
-                                <option value="" class="bg-slate-900 text-slate-200">Select your goal</option>
-                                <option value="bulk" class="bg-slate-900 text-slate-200">💪 Bulk (Gain Muscle)</option>
-                                <option value="cut" class="bg-slate-900 text-slate-200">🔥 Cut (Lose Fat)</option>
-                                <option value="maintain" class="bg-slate-900 text-slate-200">⚖️ Maintain</option>
-                            </select>
-                        </div>
-
-                        <div class="form-section space-y-2">
-                            <label class="block text-sm label-text">
-                                <i class="fas fa-running text-xs mr-1 text-slate-500"></i>Activity Level
-                            </label>
-                            <select 
-                                name="activity_level" 
-                                required
-                                class="input-elegant w-full px-4 py-3 rounded-lg text-sm focus:outline-none"
-                            >
-                                <option value="" class="bg-slate-900 text-slate-200">Select activity level</option>
-                                <option value="sedentary" class="bg-slate-900 text-slate-200">🛋️ Sedentary (Little/No exercise)</option>
-                                <option value="light" class="bg-slate-900 text-slate-200">🚶 Light (1-3 days/week)</option>
-                                <option value="moderate" class="bg-slate-900 text-slate-200">🏃 Moderate (3-5 days/week)</option>
-                                <option value="active" class="bg-slate-900 text-slate-200">💪 Active (6-7 days/week)</option>
-                                <option value="very_active" class="bg-slate-900 text-slate-200">🔥 Very Active (2x per day)</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Submit Button -->
-                <div class="text-center pt-4">
-                    <button 
-                        type="submit" 
-                        class="btn-elegant px-12 py-4 rounded-lg text-base font-semibold tracking-wide relative z-10"
-                    >
-                        <i class="fas fa-magic mr-2"></i>
-                        Generate My Personalized Plan
-                    </button>
-                    <p class="text-xs text-slate-500 mt-3">
-                        <i class="fas fa-shield-alt mr-1"></i>
-                        Your data is processed securely and never stored
-                    </p>
-                </div>
-            </form>
-        </div>
-
-        <!-- Why Choose Us Section -->
-        <div class="card-premium rounded-2xl p-8 mb-12 gradient-bg fade-in">
-            <h2 class="text-3xl font-bold text-slate-100 mb-8 text-center">
-                <i class="fas fa-star text-yellow-400 mr-2"></i>Why Choose DietGpt?
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div class="p-5 rounded-xl bg-slate-800/30">
-                    <div class="text-3xl mb-3">🧬</div>
-                    <h3 class="font-bold text-slate-200 mb-2">Science-Based</h3>
-                    <p class="text-sm text-slate-400">Macros calculated using proven formulas based on your body composition and activity level.</p>
-                </div>
-                <div class="p-5 rounded-xl bg-slate-800/30">
-                    <div class="text-3xl mb-3">🎨</div>
-                    <h3 class="font-bold text-slate-200 mb-2">Fully Personalized</h3>
-                    <p class="text-sm text-slate-400">Every recommendation considers your preferences, allergies, regional cuisine, and goals.</p>
-                </div>
-                <div class="p-5 rounded-xl bg-slate-800/30">
-                    <div class="text-3xl mb-3">🌱</div>
-                    <h3 class="font-bold text-slate-200 mb-2">Eco-Friendly</h3>
-                    <p class="text-sm text-slate-400">Sustainable approach with minimal waste, seasonal ingredients, and reusable leftovers.</p>
-                </div>
-                <div class="p-5 rounded-xl bg-slate-800/30">
-                    <div class="text-3xl mb-3">⚡</div>
-                    <h3 class="font-bold text-slate-200 mb-2">Instant Results</h3>
-                    <p class="text-sm text-slate-400">Get your complete diet and workout plan in seconds, powered by advanced AI.</p>
-                </div>
-                <div class="p-5 rounded-xl bg-slate-800/30">
-                    <div class="text-3xl mb-3">💰</div>
-                    <h3 class="font-bold text-slate-200 mb-2">Completely Free</h3>
-                    <p class="text-sm text-slate-400">No subscriptions, no hidden fees. Get professional-grade nutrition advice for free.</p>
-                </div>
-                <div class="p-5 rounded-xl bg-slate-800/30">
-                    <div class="text-3xl mb-3">🏠</div>
-                    <h3 class="font-bold text-slate-200 mb-2">Home-Cooked Focus</h3>
-                    <p class="text-sm text-slate-400">All meals are designed for home preparation with simple, accessible ingredients.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- How It Works -->
-        <div class="card-premium rounded-2xl p-8 mb-12 fade-in">
-            <h2 class="text-3xl font-bold text-slate-100 mb-8 text-center">
-                <i class="fas fa-cogs text-emerald-400 mr-2"></i>How It Works
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div class="text-center">
-                    <div class="w-16 h-16 rounded-full bg-emerald-500/20 flex items-center justify-center mx-auto mb-4">
-                        <span class="text-2xl font-bold text-emerald-400">1</span>
-                    </div>
-                    <h3 class="font-semibold text-slate-200 mb-2">Fill Your Details</h3>
-                    <p class="text-xs text-slate-400">Tell us about yourself, your goals, and preferences</p>
-                </div>
-                <div class="text-center">
-                    <div class="w-16 h-16 rounded-full bg-blue-500/20 flex items-center justify-center mx-auto mb-4">
-                        <span class="text-2xl font-bold text-blue-400">2</span>
-                    </div>
-                    <h3 class="font-semibold text-slate-200 mb-2">AI Analysis</h3>
-                    <p class="text-xs text-slate-400">Our AI analyzes your data and calculates optimal macros</p>
-                </div>
-                <div class="text-center">
-                    <div class="w-16 h-16 rounded-full bg-purple-500/20 flex items-center justify-center mx-auto mb-4">
-                        <span class="text-2xl font-bold text-purple-400">3</span>
-                    </div>
-                    <h3 class="font-semibold text-slate-200 mb-2">Get Your Plan</h3>
-                    <p class="text-xs text-slate-400">Receive personalized diet and workout recommendations</p>
-                </div>
-                <div class="text-center">
-                    <div class="w-16 h-16 rounded-full bg-amber-500/20 flex items-center justify-center mx-auto mb-4">
-                        <span class="text-2xl font-bold text-amber-400">4</span>
-                    </div>
-                    <h3 class="font-semibold text-slate-200 mb-2">Start Your Journey</h3>
-                    <p class="text-xs text-slate-400">Follow the plan and track your progress</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Footer -->
-        <div class="text-center text-slate-500 mb-8">
-            <div class="flex justify-center items-center gap-4 mb-4 flex-wrap">
-                <div class="flex items-center gap-2">
-                    <i class="fas fa-shield-alt text-emerald-400"></i>
-                    <span class="text-sm">Secure & Private</span>
-                </div>
-                <div class="w-px h-4 bg-slate-700"></div>
-                <div class="flex items-center gap-2">
-                    <i class="fas fa-bolt text-blue-400"></i>
-                    <span class="text-sm">Lightning Fast</span>
-                </div>
-                <div class="w-px h-4 bg-slate-700"></div>
-                <div class="flex items-center gap-2">
-                    <i class="fas fa-heart text-red-400"></i>
-                    <span class="text-sm">Made with Love</span>
-                </div>
-            </div>
-            <p class="text-sm mb-2">Powered by <span class="text-emerald-400 font-semibold">DietGpt</span> - AI-Powered Nutrition & Fitness</p>
-            <p class="text-xs text-slate-600">Made in India with ❤️ for sustainable, healthy living</p>
-        </div>
-    </main>
-    
-    <footer class="text-center text-slate-500 mb-8" role="contentinfo">
-
-    <script>
-        // Add smooth scroll animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.fade-in').forEach(el => {
-            el.style.opacity = '0';
-            el.style.transform = 'translateY(30px)';
-            el.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
-            observer.observe(el);
-        });
-
-        // Form validation feedback
-        const form = document.querySelector('form');
-        const inputs = form.querySelectorAll('input[required], select[required]');
-        
-        inputs.forEach(input => {
-            input.addEventListener('blur', function() {
-                if (this.value.trim() !== '') {
-                    this.classList.add('border-emerald-400');
-                } else {
-                    this.classList.remove('border-emerald-400');
-                }
-            });
-        });
-    </script>
-</body>
-</html>
+{% block scripts %}
+<script>
+document.getElementById('plan-form').addEventListener('submit', function() {
+  const btn = document.getElementById('submit-btn');
+  const text = document.getElementById('submit-text');
+  btn.disabled = true;
+  text.textContent = 'Processing...';
+});
+</script>
+{% endblock %}

@@ -1,0 +1,850 @@
+/* ============================================
+   DietGPT — iOS "Health" Inspired Design System
+   ============================================ */
+
+/* ---------- CSS Variables ---------- */
+:root {
+  /* iOS Dark Mode Foundation */
+  --bg-primary: #000000;
+  --bg-secondary: #0A0A0C;
+  --bg-card: rgba(28, 28, 30, 0.7); /* Translucent dark gray */
+  --bg-list: #1C1C1E;
+  --bg-input: rgba(118, 118, 128, 0.24);
+  --bg-hover: rgba(118, 118, 128, 0.3);
+
+  /* iOS Text */
+  --text-primary: #FFFFFF;
+  --text-secondary: rgba(235, 235, 245, 0.6);
+  --text-muted: rgba(235, 235, 245, 0.3);
+
+  /* Borders & Dividers */
+  --border-default: rgba(84, 84, 88, 0.65);
+  --border-list: rgba(84, 84, 88, 0.3);
+
+  /* Semantic Health Colors */
+  --health-red: #FF3B30;     /* Activity, Calories */
+  --health-green: #34C759;   /* Exercise, Protein */
+  --health-blue: #007AFF;    /* Stand, Water */
+  --health-cyan: #32ADE6;    /* Carbs */
+  --health-orange: #FF9500;  /* Fats */
+  --health-indigo: #5E5CE6;  /* Workouts */
+  --health-pink: #FF2D55;    /* Custom */
+
+  /* Global Accent */
+  --accent: var(--health-red);
+  --accent-light: #FF6961;
+
+  /* Sleek iOS Geometry */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  /* Depth */
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.5);
+
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+
+  --sidebar-width: 260px;
+}
+
+/* ---------- Reset & Base ---------- */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  /* System Font Stack - compact & highly legible */
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--bg-primary);
+  /* Elegant blurry shape background inspired by iOS Fitness app */
+  background-image: 
+    radial-gradient(circle at top left, rgba(255, 59, 48, 0.15), transparent 40%),
+    radial-gradient(circle at bottom right, rgba(52, 199, 89, 0.1), transparent 40%);
+  background-attachment: fixed;
+  color: var(--text-primary);
+  line-height: 1.4;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  cursor: pointer;
+  font-family: inherit;
+  border: none;
+  background: none;
+}
+
+input, select, textarea {
+  font-family: inherit;
+  font-size: inherit;
+  color: var(--text-primary);
+}
+
+ul, ol { list-style: none; }
+img { max-width: 100%; display: block; }
+
+/* ---------- Phosphor Icons Integration ---------- */
+i.ph, i.ph-fill, i.ph-bold {
+  vertical-align: middle;
+  display: inline-block;
+}
+
+/* ---------- Layout Shell ---------- */
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ---------- Sidebar ---------- */
+.sidebar {
+  width: var(--sidebar-width);
+  background: rgba(10, 10, 12, 0.85);
+  border-right: 1px solid var(--border-list);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  z-index: 100;
+  transition: transform var(--transition-base);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.sidebar-brand {
+  padding: 32px 24px 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sidebar-brand .brand-icon {
+  width: 32px;
+  height: 32px;
+  color: var(--health-red);
+  font-size: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar-brand .brand-name {
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sidebar-nav a, .sidebar-nav button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-size: 1.05rem;
+  font-weight: 500;
+  transition: background var(--transition-fast);
+  width: 100%;
+}
+
+.sidebar-nav a:hover, .sidebar-nav button:hover {
+  background: var(--bg-hover);
+}
+
+.sidebar-nav a.active {
+  background: rgba(255, 59, 48, 0.15);
+  color: var(--health-red);
+  font-weight: 600;
+}
+
+.sidebar-nav .nav-icon {
+  font-size: 1.4rem;
+  width: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar-nav .nav-separator {
+  height: 1px;
+  background: var(--border-list);
+  margin: 16px 0;
+}
+
+.sidebar-user {
+  padding: 24px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sidebar-user img {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+}
+
+.sidebar-user .user-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.sidebar-user .user-name {
+  font-size: 1rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar-user .user-email {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---------- Main Content ---------- */
+.main-content {
+  flex: 1;
+  margin-left: var(--sidebar-width);
+  min-height: 100vh;
+}
+
+.page-container {
+  max-width: 900px; /* Keep it compact like a mobile app view but centered */
+  margin: 0 auto;
+  padding: 48px 32px 80px;
+}
+
+/* ---------- Page Header ---------- */
+.page-header {
+  margin-bottom: 32px;
+}
+
+.page-header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+}
+
+.page-header p {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  margin-top: 4px;
+}
+
+/* ---------- iOS Style Cards ---------- */
+.card {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 24px;
+}
+
+.section-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-bottom: 16px;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ---------- iOS Settings List Styling ---------- */
+.ios-list {
+  background: var(--bg-list);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.ios-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-list);
+  background: transparent;
+}
+
+.ios-list-item:last-child {
+  border-bottom: none;
+}
+
+.ios-list-label {
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.ios-list-value {
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  text-align: right;
+  border: none;
+  background: transparent;
+  width: 50%;
+}
+
+.ios-list-value:focus {
+  outline: none;
+  color: var(--text-primary);
+}
+
+select.ios-list-value {
+  direction: rtl;
+  background: transparent;
+  padding-right: 0;
+}
+
+select.ios-list-value option {
+  direction: ltr;
+  background-color: var(--bg-list);
+  color: var(--text-primary);
+}
+
+/* ---------- Buttons ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 24px;
+  border-radius: var(--radius-md);
+  font-size: 1.05rem;
+  font-weight: 600;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: var(--health-red);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: var(--accent-light);
+}
+
+.btn-secondary {
+  background: var(--bg-input);
+  color: var(--text-primary);
+}
+
+.btn-secondary:hover {
+  background: var(--bg-hover);
+}
+
+.btn-danger {
+  color: var(--health-red);
+}
+
+.btn-ghost {
+  color: var(--health-red);
+  padding: 8px;
+  font-size: 1.2rem;
+}
+
+.btn-block { width: 100%; display: flex; }
+
+/* ---------- Stats Grid (Health Rings) ---------- */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.stat-card {
+  background: var(--bg-list);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 8px;
+}
+
+.stat-value {
+  font-size: 2.2rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+}
+
+.stat-unit {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.c-cal { color: var(--health-red); }
+.c-pro { color: var(--health-green); }
+.c-car { color: var(--health-cyan); }
+.c-fat { color: var(--health-orange); }
+
+/* ---------- Progress Bar ---------- */
+.progress-container {
+  background: var(--bg-list);
+  padding: 20px;
+  border-radius: var(--radius-lg);
+  margin-bottom: 24px;
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.progress-header .val {
+  color: var(--health-red);
+}
+
+.progress-bar {
+  width: 100%;
+  height: 12px;
+  background: var(--bg-input);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--health-red);
+  border-radius: var(--radius-full);
+}
+
+/* ---------- Chat UI ---------- */
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 160px);
+}
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.chat-bubble {
+  max-width: 75%;
+  padding: 14px 18px;
+  border-radius: 20px;
+  font-size: 1.05rem;
+  line-height: 1.5;
+  animation: slideUp 0.3s ease;
+  word-wrap: break-word;
+}
+
+.chat-bubble p {
+  margin-bottom: 8px;
+}
+
+.chat-bubble p:last-child {
+  margin-bottom: 0;
+}
+
+.chat-bubble ul, .chat-bubble ol {
+  margin-left: 24px;
+  margin-bottom: 8px;
+}
+
+.chat-bubble-user {
+  align-self: flex-end;
+  background: var(--health-blue);
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+
+.chat-bubble-ai {
+  align-self: flex-start;
+  background: var(--bg-list);
+  color: var(--text-primary);
+  border-bottom-left-radius: 4px;
+}
+
+.chat-bubble-system {
+  align-self: center;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+
+.chat-input-bar {
+  display: flex;
+  gap: 12px;
+  padding: 16px 0;
+}
+
+.chat-input-bar input {
+  flex: 1;
+  padding: 14px 20px;
+  background: var(--bg-list);
+  border: 1px solid var(--border-list);
+  border-radius: var(--radius-full);
+  font-size: 1.05rem;
+  outline: none;
+}
+
+.chat-input-bar input:focus {
+  border-color: var(--health-blue);
+}
+
+.chat-send-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-full);
+  background: var(--health-blue);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+}
+
+/* ---------- Meal Log ---------- */
+.meal-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 1px; /* border hack */
+  background: var(--border-list);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: 32px;
+}
+
+.meal-entry {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  background: var(--bg-list);
+}
+
+.meal-icon {
+  width: 40px;
+  height: 40px;
+  background: var(--bg-input);
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  color: var(--health-orange);
+}
+
+.meal-details {
+  flex: 1;
+}
+
+.meal-name {
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.meal-meta {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.meal-calories {
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: var(--text-primary);
+}
+
+/* ---------- Pre-formatted text for Plans ---------- */
+.plan-data-section {
+  background: var(--bg-list);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.plan-data-section h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.plan-data-section ul {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.plan-data-section li {
+  font-size: 1.05rem;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-list);
+}
+
+.plan-data-section li:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+/* ---------- Saved Plans Grid ---------- */
+.plans-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.plan-card {
+  background: var(--bg-list);
+  padding: 24px;
+  border-radius: var(--radius-lg);
+  display: block;
+}
+
+.plan-card .plan-date {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.plan-card .plan-cal {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--health-red);
+}
+
+.plan-card .plan-macros {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* ---------- Flash Alerts ---------- */
+.alert {
+  padding: 16px 20px;
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg-list);
+}
+
+.alert-error { color: var(--health-red); }
+.alert-success { color: var(--health-green); }
+
+/* ---------- Profile Layout ---------- */
+.profile-top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 0;
+  margin-bottom: 20px;
+}
+
+.profile-top img, .profile-top .avatar-placeholder {
+  width: 96px;
+  height: 96px;
+  border-radius: var(--radius-full);
+  margin-bottom: 16px;
+}
+
+.profile-top .avatar-placeholder {
+  background: var(--bg-input);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.profile-top h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.profile-badges {
+  display: flex;
+  gap: 8px;
+}
+
+.profile-badge {
+  background: var(--bg-list);
+  padding: 6px 12px;
+  border-radius: var(--radius-full);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+/* ---------- Animations ---------- */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-in > * {
+  animation: slideUp 0.4s ease both;
+}
+
+.animate-in > *:nth-child(1) { animation-delay: 0ms; }
+.animate-in > *:nth-child(2) { animation-delay: 50ms; }
+.animate-in > *:nth-child(3) { animation-delay: 100ms; }
+.animate-in > *:nth-child(4) { animation-delay: 150ms; }
+
+/* ---------- Login Page ---------- */
+.login-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.login-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  padding: 40px 32px;
+  border-radius: var(--radius-xl);
+  text-align: center;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: var(--shadow-md);
+}
+
+.login-logo {
+  font-size: 3.5rem;
+  color: var(--health-red);
+  margin-bottom: 16px;
+}
+
+.login-card h1 {
+  font-size: 2.4rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.login-subtitle {
+  color: var(--text-secondary);
+  font-size: 1.05rem;
+  margin-bottom: 32px;
+  line-height: 1.5;
+}
+
+.google-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: #fff;
+  color: #000;
+  padding: 14px 24px;
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  font-size: 1.05rem;
+  transition: transform var(--transition-fast), opacity var(--transition-fast);
+}
+
+.google-btn svg {
+  width: 24px;
+  height: 24px;
+}
+
+.google-btn:hover {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
+/* ---------- Mobile ---------- */
+@media (max-width: 768px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .main-content { margin-left: 0; }
+  .page-container { padding: 48px 20px 80px; }
+  .stats-grid { grid-template-columns: 1fr; }
+}
+
+/* ---------- Mobile Sidebar Toggle ---------- */
+.sidebar-toggle {
+  display: none;
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 200;
+  width: 44px;
+  height: 44px;
+  background: var(--bg-list);
+  border-radius: var(--radius-full);
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  color: var(--health-red);
+}
+
+@media (max-width: 768px) {
+  .sidebar-toggle { display: flex; }
+}
+
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 90;
+}
+
+.sidebar-overlay.active { display: block; }

@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+{% set active_page = "chat" %}
+{% block title %}AI Buddy — DietGPT{% endblock %}
+
+{% block head %}
+<style>
+  /* Override default container layout to maximize chat area */
+  .page-container {
+    max-width: 100% !important;
+    padding: 24px 32px !important;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  .chat-container {
+    height: 100%;
+    flex: 1;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="chat-container animate-in">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;padding-bottom:12px;border-bottom:1px solid var(--border-list);">
+    <div>
+      <h1 style="font-size:1.4rem;font-weight:700;display:flex;align-items:center;gap:8px;">
+        <i class="ph-fill ph-chat-circle-dots" style="color:var(--health-blue)"></i> AI Buddy
+      </h1>
+      <p style="font-size:0.8rem;color:var(--text-secondary);margin-top:2px;">
+        Synced with your Health Profile & Logs
+      </p>
+    </div>
+    <button class="btn-ghost" onclick="clearChat()" id="clear-btn" title="Reset Conversation">
+      <i class="ph-bold ph-arrow-counter-clockwise"></i>
+    </button>
+  </div>
+
+  <div class="chat-messages" id="chat-messages">
+    <div class="chat-bubble chat-bubble-system">Connecting to intelligence core...</div>
+  </div>
+
+  <div class="chat-input-bar">
+    <input id="chat-input" type="text" placeholder="Ask about your diet & macros..." autocomplete="off">
+    <button id="send-btn" class="chat-send-btn" onclick="sendMessage()">
+      <i class="ph-bold ph-arrow-up"></i>
+    </button>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+const chatBox = document.getElementById('chat-messages');
+const chatInput = document.getElementById('chat-input');
+const sendBtn = document.getElementById('send-btn');
+
+function addBubble(text, type) {
+  const div = document.createElement('div');
+  div.className = 'chat-bubble chat-bubble-' + type;
+  
+  // Parse markdown for AI responses to handle bullets, bold text, and paragraphs
+  if (type === 'ai' && typeof marked !== 'undefined') {
+    div.innerHTML = marked.parse(text);
+  } else {
+    // For user input, just sanitize or use plain text approaches (or parse it as well)
+    div.innerHTML = marked.parse(text);
+  }
+  
+  chatBox.appendChild(div);
+  chatBox.scrollTop = chatBox.scrollHeight;
+  return div;
+}
+
+function showTyping() {
+  const div = document.createElement('div');
+  div.className = 'chat-bubble chat-bubble-ai';
+  div.id = 'typing';
+  div.innerHTML = '<span style="font-weight:bold;letter-spacing:2px;color:var(--text-secondary);">...</span>';
+  chatBox.appendChild(div);
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+function hideTyping() {
+  const t = document.getElementById('typing');
+  if (t) t.remove();
+}
+
+async function loadHistory() {
+  try {
+    const res = await fetch('/chat_history');
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed');
+
+    chatBox.innerHTML = '';
+
+    if (!data.messages.length) {
+      addBubble("Hi! I'm your DietGPT buddy. I already know your profile and today's meal log. Ask me anything about your diet or for meal ideas!", 'ai');
+    } else {
+      data.messages.forEach(msg => {
+        addBubble(msg.message, 'user');
+        addBubble(msg.response, 'ai');
+      });
+    }
+  } catch (err) {
+    chatBox.innerHTML = '';
+    addBubble("Couldn't sync history. Start a fresh conversation!", 'system');
+  }
+}
+
+async function sendMessage() {
+  const message = chatInput.value.trim();
+  if (!message) return;
+
+  addBubble(message, 'user');
+  chatInput.value = '';
+  sendBtn.disabled = true;
+  showTyping();
+
+  try {
+    const res = await fetch('/chat', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({message})
+    });
+    const data = await res.json();
+    hideTyping();
+    if (!res.ok) throw new Error(data.error || 'Failed');
+    addBubble(data.response, 'ai');
+  } catch (err) {
+    hideTyping();
+    addBubble('Alert: ' + err.message, 'system');
+  } finally {
+    sendBtn.disabled = false;
+    chatInput.focus();
+  }
+}
+
+async function clearChat() {
+  if (!confirm('Clear your conversation? This cannot be undone.')) return;
+  try {
+    const res = await fetch('/chat_clear', {method: 'POST'});
+    if (!res.ok) throw new Error('Failed');
+    chatBox.innerHTML = '';
+    addBubble("Conversation cleared. How can I help you today?", 'ai');
+  } catch (err) {
+    alert('Could not clear memory.');
+  }
+}
+
+chatInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') { e.preventDefault(); sendMessage(); }
+});
+
+loadHistory();
+</script>
+{% endblock %}

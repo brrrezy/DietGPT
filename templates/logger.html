@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+{% set active_page = "logger" %}
+{% block title %}Logger — DietGPT{% endblock %}
+
+{% block content %}
+<div class="page-header animate-in">
+  <h1>Meal Log</h1>
+  <p>Track your nutrition intake for today.</p>
+</div>
+
+<!-- iOS Styled Rings (Simplified for logger) -->
+<div class="stats-grid animate-in" style="margin-bottom:32px; animation-delay: 50ms;">
+  <div class="stat-card">
+    <div class="stat-header">
+      <i class="ph-fill ph-flame" style="color:var(--health-red)"></i>
+      <span>Calories</span>
+    </div>
+    <div class="stat-value c-cal" id="stat-calories">{{ today_calories }}</div>
+    <div class="stat-unit">/ {{ target_calories if target_calories else '--' }} kcal</div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-header">
+      <i class="ph-fill ph-barbell" style="color:var(--health-green)"></i>
+      <span>Protein</span>
+    </div>
+    <div class="stat-value c-pro"><span id="stat-protein">{{ today_protein }}</span><span class="stat-unit">g</span></div>
+  </div>
+</div>
+
+<!-- Log Meal Form (iOS settings style) -->
+<div class="animate-in" style="margin-bottom:40px; animation-delay: 100ms;">
+  <div class="section-title">Log Data</div>
+  <div class="ios-list" style="margin-bottom:16px;">
+    <div class="ios-list-item">
+      <div class="ios-list-label">Food Item</div>
+      <input id="meal-desc" type="text" class="ios-list-value" placeholder="e.g. 2 eggs and toast" style="text-align:left;">
+    </div>
+    <div class="ios-list-item">
+      <div class="ios-list-label">Type</div>
+      <select id="meal-type" class="ios-list-value">
+        <option value="breakfast">Breakfast</option>
+        <option value="lunch">Lunch</option>
+        <option value="dinner">Dinner</option>
+        <option value="snack">Snack</option>
+      </select>
+    </div>
+  </div>
+  <button id="log-btn" class="btn btn-primary" onclick="logMeal()" style="width:100%;">
+    <span id="log-btn-text">Add to Log</span>
+  </button>
+  <p id="log-status" style="margin-top:12px;font-size:0.9rem;color:var(--text-secondary);text-align:center;"></p>
+</div>
+
+<!-- Today's Meals Timeline -->
+<div class="section-title animate-in" style="animation-delay: 150ms;">Recent Logs</div>
+<div id="meal-list" class="meal-timeline animate-in" style="animation-delay: 200ms;">
+  {% if today_logs %}
+    {% for log in today_logs %}
+    <div class="meal-entry" id="meal-{{ log.id }}">
+      <div class="meal-icon">
+        {% if log.meal_type == 'breakfast' %}<i class="ph-fill ph-sunrise"></i>
+        {% elif log.meal_type == 'lunch' %}<i class="ph-fill ph-sun"></i>
+        {% elif log.meal_type == 'dinner' %}<i class="ph-fill ph-moon-stars"></i>
+        {% else %}<i class="ph-fill ph-apple-logo"></i>{% endif %}
+      </div>
+      <div class="meal-details">
+        <div class="meal-name">{{ log.description }}</div>
+        <div class="meal-meta">{{ log.meal_type|title }}{% if log.protein %} · {{ log.protein }}g P{% endif %}{% if log.carbs %} · {{ log.carbs }}g C{% endif %}{% if log.fats %} · {{ log.fats }}g F{% endif %}</div>
+      </div>
+      <div class="meal-calories">{{ log.calories }} kcal</div>
+      <button class="btn-ghost" onclick="deleteMeal('{{ log.id }}')" title="Delete"><i class="ph-fill ph-minus-circle"></i></button>
+    </div>
+    {% endfor %}
+  {% else %}
+    <div class="empty-state" id="empty-meals" style="padding: 24px; text-align: center; color: var(--text-secondary);">
+      <p>No meals logged yet today.</p>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const MEAL_ICONS = {breakfast:'<i class="ph-fill ph-sunrise"></i>', lunch:'<i class="ph-fill ph-sun"></i>', dinner:'<i class="ph-fill ph-moon-stars"></i>', snack:'<i class="ph-fill ph-apple-logo"></i>'};
+let totalCal = {{ today_calories }};
+let totalProtein = {{ today_protein }};
+
+function updateStats() {
+  document.getElementById('stat-calories').textContent = totalCal;
+  document.getElementById('stat-protein').textContent = totalProtein;
+}
+
+async function logMeal() {
+  const desc = document.getElementById('meal-desc').value.trim();
+  if (!desc) return;
+  const mealType = document.getElementById('meal-type').value;
+  const btn = document.getElementById('log-btn');
+  const btnText = document.getElementById('log-btn-text');
+  const status = document.getElementById('log-status');
+
+  btn.disabled = true;
+  btnText.textContent = 'Analyzing...';
+  status.textContent = 'Estimating nutritional data...';
+  status.style.color = 'var(--text-secondary)';
+
+  try {
+    const res = await fetch('/log_meal', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({description: desc, meal_type: mealType})
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed');
+
+    const empty = document.getElementById('empty-meals');
+    if (empty) empty.remove();
+
+    const list = document.getElementById('meal-list');
+    const entry = document.createElement('div');
+    entry.className = 'meal-entry';
+    entry.id = 'meal-' + data.id;
+    entry.style.animation = 'slideUp 0.3s ease-out';
+    entry.innerHTML = `
+      <div class="meal-icon">${MEAL_ICONS[data.meal_type] || '<i class="ph-fill ph-apple-logo"></i>'}</div>
+      <div class="meal-details">
+        <div class="meal-name">${data.description}</div>
+        <div class="meal-meta">${data.meal_type.charAt(0).toUpperCase() + data.meal_type.slice(1)}${data.protein ? ' · ' + data.protein + 'g P' : ''}${data.carbs ? ' · ' + data.carbs + 'g C' : ''}${data.fats ? ' · ' + data.fats + 'g F' : ''}</div>
+      </div>
+      <div class="meal-calories">${data.calories} kcal</div>
+      <button class="btn-ghost" onclick="deleteMeal('${data.id}')" title="Delete"><i class="ph-fill ph-minus-circle"></i></button>
+    `;
+    list.prepend(entry);
+
+    totalCal += data.calories;
+    totalProtein += data.protein || 0;
+    updateStats();
+
+    document.getElementById('meal-desc').value = '';
+    status.textContent = `Added: ${data.calories} kcal, ${data.protein || 0}g protein`;
+    status.style.color = 'var(--health-green)';
+  } catch (err) {
+    status.textContent = err.message;
+    status.style.color = 'var(--health-red)';
+  } finally {
+    btn.disabled = false;
+    btnText.textContent = 'Add to Log';
+  }
+}
+
+async function deleteMeal(mealId) {
+  if (!confirm('Delete this entry?')) return;
+  try {
+    const el = document.getElementById('meal-' + mealId);
+    const calText = el.querySelector('.meal-calories').textContent;
+    const cal = parseInt(calText) || 0;
+
+    const res = await fetch('/delete_meal/' + mealId, {method: 'DELETE'});
+    if (!res.ok) throw new Error('Failed');
+
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(10px)';
+    el.style.transition = 'all 0.3s ease';
+    setTimeout(() => el.remove(), 300);
+
+    totalCal -= cal;
+    // Note: To perfectly adjust protein from deleted entry requires we parse protein text too.
+    // We'll just update total calories directly, real protein updates on refresh.
+    updateStats();
+  } catch (err) {
+    alert('Could not delete meal.');
+  }
+}
+
+document.getElementById('meal-desc').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') { e.preventDefault(); logMeal(); }
+});
+</script>
+{% endblock %}

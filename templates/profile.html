@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% set active_page = "profile" %}
+{% block title %}Profile — DietGPT{% endblock %}
+
+{% block content %}
+<div class="animate-in" style="max-width: 600px; margin: 0 auto;">
+  
+  <!-- Profile Summary Top Header -->
+  <div class="profile-top">
+    {% if user.picture %}
+    <img src="{{ user.picture }}" alt="Avatar" referrerpolicy="no-referrer">
+    {% else %}
+    <div class="avatar-placeholder">{{ user.name[0] }}</div>
+    {% endif %}
+    <h1>{{ user.name }}</h1>
+    
+    <div class="profile-badges">
+      {% if profile.get('age') %}<div class="profile-badge">{{ profile.age }} YRS</div>{% endif %}
+      {% if profile.get('weight') %}<div class="profile-badge">{{ profile.weight }} KG</div>{% endif %}
+      {% if profile.get('height') %}<div class="profile-badge">{{ profile.height }} FT</div>{% endif %}
+    </div>
+  </div>
+
+  <form action="/profile" method="post" id="profile-form">
+    
+    <div class="section-title">Health Details</div>
+    <div class="ios-list">
+      <div class="ios-list-item">
+        <div class="ios-list-label">Age</div>
+        <input name="age" type="number" class="ios-list-value" placeholder="Required" value="{{ profile.get('age', '') }}">
+      </div>
+      <div class="ios-list-item">
+        <div class="ios-list-label">Gender</div>
+        <select name="gender" class="ios-list-value">
+          <option value="">Not Set</option>
+          <option value="male" {% if profile.get('gender') == 'male' %}selected{% endif %}>Male</option>
+          <option value="female" {% if profile.get('gender') == 'female' %}selected{% endif %}>Female</option>
+        </select>
+      </div>
+      <div class="ios-list-item">
+        <div class="ios-list-label">Weight (kg)</div>
+        <input name="weight" type="number" step="0.1" class="ios-list-value" placeholder="Required" value="{{ profile.get('weight', '') }}">
+      </div>
+      <div class="ios-list-item">
+        <div class="ios-list-label">Height (ft)</div>
+        <input name="height" type="number" step="0.1" class="ios-list-value" placeholder="Required" value="{{ profile.get('height', '') }}">
+      </div>
+    </div>
+
+    <div class="section-title">Goals & Activity</div>
+    <div class="ios-list">
+      <div class="ios-list-item">
+        <div class="ios-list-label">Goal</div>
+        <select name="goal" class="ios-list-value">
+          <option value="maintain" {% if profile.get('goal') == 'maintain' %}selected{% endif %}>Maintain</option>
+          <option value="cut" {% if profile.get('goal') == 'cut' %}selected{% endif %}>Cut</option>
+          <option value="bulk" {% if profile.get('goal') == 'bulk' %}selected{% endif %}>Bulk</option>
+        </select>
+      </div>
+      <div class="ios-list-item">
+        <div class="ios-list-label">Activity Level</div>
+        <select name="activity_level" class="ios-list-value">
+          <option value="sedentary" {% if profile.get('activity_level') == 'sedentary' %}selected{% endif %}>Sedentary</option>
+          <option value="light" {% if profile.get('activity_level') == 'light' %}selected{% endif %}>Light</option>
+          <option value="moderate" {% if profile.get('activity_level') == 'moderate' %}selected{% endif %}>Moderate</option>
+          <option value="active" {% if profile.get('activity_level') == 'active' %}selected{% endif %}>Active</option>
+          <option value="very_active" {% if profile.get('activity_level') == 'very_active' %}selected{% endif %}>Very Active</option>
+        </select>
+      </div>
+      <div class="ios-list-item">
+        <div class="ios-list-label" style="color:var(--health-red)">Target Calories</div>
+        <input name="target_calories" type="number" class="ios-list-value" placeholder="e.g. 2200" value="{{ profile.get('target_calories', '') }}">
+      </div>
+    </div>
+
+    <div class="section-title">Nutrition Preferences</div>
+    <div class="ios-list">
+      <div class="ios-list-item">
+        <div class="ios-list-label">Diet Type</div>
+        <select name="diet_pref" class="ios-list-value">
+          <option value="">Not Set</option>
+          <option value="veg" {% if profile.get('diet_pref') == 'veg' %}selected{% endif %}>Vegetarian</option>
+          <option value="nonveg" {% if profile.get('diet_pref') == 'nonveg' %}selected{% endif %}>Non-Vegetarian</option>
+          <option value="vegan" {% if profile.get('diet_pref') == 'vegan' %}selected{% endif %}>Vegan</option>
+        </select>
+      </div>
+      <div class="ios-list-item">
+        <div class="ios-list-label">Region</div>
+        <input name="region" class="ios-list-value" placeholder="e.g. India" value="{{ profile.get('region', '') }}">
+      </div>
+      <div class="ios-list-item">
+        <div class="ios-list-label">Allergies</div>
+        <input name="allergies" class="ios-list-value" placeholder="e.g. Dairy, Nuts" value="{{ profile.get('allergies', '') }}">
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary btn-block" style="margin-top:32px;">Update Health Profile</button>
+  </form>
+</div>
+{% endblock %}
