@@ -1095,6 +1095,23 @@ def recommend():
     return render_template("index.html", base_url=BASE_URL, user=current_user())
 
 
+@app.route("/delete_plan/<plan_id>", methods=["POST"])
+def delete_plan(plan_id):
+    user = current_user()
+    if not user:
+        return redirect(url_for("login"))
+
+    plan_ref = (
+        firestore_db.collection("users")
+        .document(user["id"])
+        .collection("plans")
+        .document(plan_id)
+    )
+    plan_ref.delete()
+
+    return redirect(url_for("dashboard"))
+
+
 @app.route("/plan/<plan_id>")
 @login_required
 def view_plan(plan_id):

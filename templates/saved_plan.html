@@ -122,36 +122,64 @@
   {% endif %}
 
   {% if plan.staples_text %}
-  <div class="plan-data-section animate-in" style="margin-top: 40px;">
-    <h3 class="section-subtitle"><i class="ph-bold ph-cookie"></i> Snacks</h3>
-    <div class="staples-content card doc-style">
-        <ul class="option-list">
-            {% for line in plan.staples_text.split('\n') %}
-                {% if line.strip() %}
-                    <li>{{ line.strip('- ') }}</li>
-                {% endif %}
-            {% endfor %}
-        </ul>
+  <div class="detailed-meal-flow" style="margin-top: 40px;">
+    <div class="detailed-meal-card">
+        <div class="meal-main-header">
+            <div class="meal-type-icon" style="background:rgba(255, 149, 0, 0.1); color:var(--health-orange)">
+                <i class="ph-fill ph-cookie"></i>
+            </div>
+            <div class="meal-title-group">
+                <span class="meal-label">Daily Staples</span>
+                <h3 class="meal-name">Snacks</h3>
+            </div>
+        </div>
+        <div class="option-content" style="margin-top:16px;">
+            <ul class="option-list">
+                {% for line in plan.staples_text.split('\n') %}
+                    {% if line.strip() %}
+                        <li>{{ line.strip('- ') }}</li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
     </div>
   </div>
   {% endif %}
 
   {% if plan.workout_days %}
   <div class="plan-data-section workout-section animate-in" style="margin-top: 40px;">
-    <div class="workout-header-group">
-        <h3 class="section-subtitle"><i class="ph-bold ph-lightning"></i> Workout Plan</h3>
-        <p class="workout-rationale">{{ plan.workout_rationale }}</p>
+    <h2 class="section-title">Workout Plan</h2>
+    
+    {% if plan.workout_rationale %}
+    <div class="strategy-box" style="margin-bottom: 24px; background: rgba(94, 92, 230, 0.05); border-left-color: var(--health-indigo);">
+        <strong>Goal Strategy:</strong>
+        <p>{{ plan.workout_rationale }}</p>
     </div>
-    <div class="workout-protocol-grid">
+    {% endif %}
+
+    <div class="detailed-meal-flow">
         {% for day in plan.workout_days %}
-        <div class="workout-day-card doc-style">
-            {% for line in day.split('\n') %}
-                {% if line.strip() %}
-                    <div class="workout-line {% if 'Day' in line %}day-header{% endif %}">
-                        {{ line.strip('- ') }}
-                    </div>
-                {% endif %}
-            {% endfor %}
+        <div class="detailed-meal-card" style="border-left-color: var(--health-indigo);">
+            <div class="meal-main-header">
+                <div class="meal-type-icon" style="background:rgba(94, 92, 230, 0.1); color:var(--health-indigo)">
+                    <i class="ph-fill ph-barbell"></i>
+                </div>
+                <div class="meal-title-group">
+                    <h3 class="meal-name">
+                        {% set first_line = day.split('\n')[0] %}
+                        {{ first_line.strip('- ') }}
+                    </h3>
+                </div>
+            </div>
+            <div class="option-content" style="margin-top:16px;">
+                <ul class="option-list">
+                    {% for line in day.split('\n')[1:] %}
+                        {% if line.strip() %}
+                            <li style="border-left-color: var(--health-indigo);">{{ line.strip('- ') }}</li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
         </div>
         {% endfor %}
     </div>
@@ -175,24 +203,32 @@
 <!-- Extra Tips -->
 {% if plan.meal_prep_hack or plan.recovery_secret %}
 <div class="elite-optimization-section animate-in" style="animation-delay: 250ms; margin-top: 40px;">
-    <div class="optimization-card">
-        <div class="optimization-header">
-            <i class="ph-fill ph-sparkle" style="color:var(--health-yellow)"></i>
-            <h3>Extra Tips</h3>
-        </div>
-        <div class="optimization-grid">
-            {% if plan.meal_prep_hack %}
-            <div class="opt-item">
-                <strong>Prep Tip:</strong>
-                <p>{{ plan.meal_prep_hack }}</p>
+    <div class="detailed-meal-flow">
+        <div class="detailed-meal-card" style="border-left-color: var(--health-yellow);">
+            <div class="meal-main-header">
+                <div class="meal-type-icon" style="background:rgba(255, 204, 0, 0.1); color:var(--health-yellow)">
+                    <i class="ph-fill ph-sparkle"></i>
+                </div>
+                <div class="meal-title-group">
+                    <span class="meal-label">Optimization</span>
+                    <h3 class="meal-name">Extra Tips</h3>
+                </div>
             </div>
-            {% endif %}
-            {% if plan.recovery_secret %}
-            <div class="opt-item">
-                <strong>Recovery Tip:</strong>
-                <p>{{ plan.recovery_secret }}</p>
+            
+            <div class="options-grid" style="margin-top:20px;">
+                {% if plan.meal_prep_hack %}
+                <div class="option-block primary" style="border-left-color: var(--health-yellow);">
+                    <div class="option-header"><i class="ph-fill ph-knife"></i> Prep Tip</div>
+                    <div class="option-content">{{ plan.meal_prep_hack }}</div>
+                </div>
+                {% endif %}
+                {% if plan.recovery_secret %}
+                <div class="option-block alternative" style="border-left-color: var(--health-cyan);">
+                    <div class="option-header"><i class="ph-fill ph-moon"></i> Recovery Tip</div>
+                    <div class="option-content">{{ plan.recovery_secret }}</div>
+                </div>
+                {% endif %}
             </div>
-            {% endif %}
         </div>
     </div>
 </div>
