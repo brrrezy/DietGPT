@@ -79,20 +79,59 @@ firebase_credentials_json = os.getenv("FIREBASE_CREDENTIALS_JSON")
 
 if not firebase_admin._apps:
     import json
-    if firebase_credentials_json:
-        # Vercel Production Environment
-        cred_dict = json.loads(firebase_credentials_json)
-        cred = credentials.Certificate(cred_dict)
-    elif firebase_credentials_path:
-        # Local Development Environment (.env variable mapping)
-        cred = credentials.Certificate(firebase_credentials_path)
-    else:
-        # Hard fallback
-        cred = credentials.Certificate("diet-gpt-ac388-firebase-adminsdk-fbsvc-3b6f564a71.json")
-    
-    firebase_admin.initialize_app(cred)
+    try:
+        if firebase_credentials_json:
+            # Vercel Production Environment
+            cred_dict = json.loads(firebase_credentials_json)
+            cred = credentials.Certificate(cred_dict)
+        elif firebase_credentials_path and os.path.exists(firebase_credentials_path):
+            # Local Development Environment (.env variable mapping)
+            cred = credentials.Certificate(firebase_credentials_path)
+        elif os.path.exists("diet-gpt-ac388-firebase-adminsdk-fbsvc-3b6f564a71.json"):
+            # Hard fallback
+            cred = credentials.Certificate("diet-gpt-ac388-firebase-adminsdk-fbsvc-3b6f564a71.json")
+        else:
+            raise FileNotFoundError("No Firebase credentials found.")
+        
+        firebase_admin.initialize_app(cred)
+        firestore_db = firestore.client()
+    except Exception as e:
+        print(f"⚠️ Firebase initialization failed: {str(e)}")
+        print("🚀 Running in DEMO MODE with Mock Firestore.")
+        
+        # Simple Mock Firestore for Demo
+        class MockDoc:
+            def __init__(self, id, data=None):
+                self.id = id
+                self.exists = data is not None
+                self._data = data or {}
+            def to_dict(self): return self._data
+            def get(self): return self
+            @property
+            def reference(self): return self
+            def delete(self): pass
+            def set(self, data, merge=False): pass
 
-firestore_db = firestore.client()
+        class MockCollection:
+            def document(self, id=None): return MockDoc(id or "mock_id")
+            def where(self, *args, **kwargs): return self
+            def order_by(self, *args, **kwargs): return self
+            def limit(self, *args, **kwargs): return self
+            def stream(self): return []
+            def add(self, data): return None, MockDoc("mock_id", data)
+
+        class MockFirestore:
+            def __init__(self):
+                self.SERVER_TIMESTAMP = "mock_timestamp"
+                class MockQuery:
+                    DESCENDING = "descending"
+                    ASCENDING = "ascending"
+                self.Query = MockQuery()
+            def collection(self, name): return MockCollection()
+        
+        firestore_db = MockFirestore()
+else:
+    firestore_db = firestore.client()
 
 # ──────────────────────────────────────────────
 # OAuth
@@ -269,21 +308,34 @@ chat_prompt_template = PromptTemplate(
         "current_message",
     ],
     template=(
-        "You are DietGPT — a friendly nutritionist AI.\n\n"
-        "COMMUNICATION RULES:\n"
-        "* First, meticulously review the User Profile and Today's Meals data provided below to understand their complete context.\n"
-        "* Explain your reasoning clearly and friendly in simple, user-understandable terms.\n"
-        "* Keep your final answers VERY SHORT AND CRISP CLEAR. Maximum 2-3 bullet points or maximum 50 words altogether.\n"
-        "* Ensure the tone is clear, friendly, and easy to read for a client.\n"
-        "* Always ground your advice based strictly on their logged metrics and goals.\n\n"
-        "USER PROFILE:\n"
-        "{user_profile_summary}\n\n"
-        "TODAY'S MEALS LOGGED:\n"
-        "{today_meals_summary}\n\n"
-        "CONVERSATION HISTORY:\n"
-        "{chat_history}\n\n"
-        "User Request: {current_message}\n\n"
-        "Review the data and provide a direct point-to-point answer."
+        "You are DietGPT — a precise, friendly nutritionist AI.\n\n"
+
+        "OBJECTIVE:\n"
+        "Give the most relevant, actionable advice using ONLY the provided data.\n\n"
+
+        "STRICT RULES:\n"
+        "- Output MUST be <= 50 words.\n"
+        "- Use ONLY 2–3 bullet points.\n"
+        "- NO explanations, NO reasoning steps.\n"
+        "- NO assumptions beyond given data.\n"
+        "- If data is missing → say 'insufficient data' briefly.\n"
+        "- Prioritize: (1) goal alignment (2) calorie control (3) protein adequacy.\n\n"
+
+        "STYLE:\n"
+        "- Direct, practical, client-friendly.\n"
+        "- No fluff. No repetition.\n\n"
+
+        "CONTEXT:\n"
+        "USER PROFILE:\n{user_profile_summary}\n\n"
+        "TODAY'S MEALS:\n{today_meals_summary}\n\n"
+        "CHAT HISTORY:\n{chat_history}\n\n"
+
+        "USER MESSAGE:\n{current_message}\n\n"
+
+        "OUTPUT FORMAT (STRICT):\n"
+        "- point 1\n"
+        "- point 2\n"
+        "- point 3 (optional)"
     ),
 )
 
@@ -302,41 +354,62 @@ prompt_template_resto = PromptTemplate(
         "activity_level",
     ],
     template=(
-        "You are a professional nutritionist and fitness coach. Create a detailed diet plan AND workout routine based on the following criteria:\n\n"
-        "Personal Info: Age: {age}, Gender: {gender}, Weight: {weight} kg, Height: {height} ft\n"
-        "Diet: {veg_or_nonveg}, Goal: {goal}, Activity Level: {activity_level}\n"
-        "Health: Disease/Conditions: {disease}, Allergies: {allergics}\n"
-        "Preferences: Region: {region}, Cuisine: {foodtype}\n\n"
-        "CRITICAL: You MUST provide both diet recommendations AND workout recommendations. The workout section is REQUIRED. All food suggestions must be homemade/home-cooked with simple preparation notes—do not mention restaurants, takeout, or packaged meals.\n"
-        "SUSTAINABILITY NON-NEGOTIABLES: Favor seasonal, local, bulk-bought ingredients, minimize packaging, highlight ways to reuse leftovers, and offer eco-friendly prep or storage tips for each food section. Mention plant-forward swaps even for non-veg eaters.\n\n"
-        "Provide output in EXACTLY this format:\n\n"
+        "You are an expert nutritionist + fitness coach.\n\n"
+
+        "GOAL:\n"
+        "Generate a COMPLETE diet + workout plan.\n\n"
+
+        "STRICT RULES:\n"
+        "- MUST include BOTH diet AND workouts.\n"
+        "- Homemade food ONLY (no restaurants, packaged food).\n"
+        "- Use simple Indian cooking.\n"
+        "- Tailor strictly to goal + health conditions.\n"
+        "- Keep format EXACT.\n"
+        "- No extra text outside format.\n\n"
+
+        "MACRO LOGIC:\n"
+        "- CUT → calorie deficit, high protein\n"
+        "- BULK → surplus calories\n"
+        "- MAINTAIN → maintenance calories\n\n"
+
+        "SUSTAINABILITY:\n"
+        "- Prefer local, seasonal foods\n"
+        "- Add 1 short eco/prep tip per section\n\n"
+
+        "USER DATA:\n"
+        "Age: {age}, Gender: {gender}\n"
+        "Weight: {weight}kg, Height: {height}ft\n"
+        "Diet: {veg_or_nonveg}, Goal: {goal}\n"
+        "Activity: {activity_level}\n"
+        "Disease: {disease}, Allergies: {allergics}\n"
+        "Region: {region}, Cuisine: {foodtype}\n\n"
+
+        "OUTPUT (STRICT FORMAT):\n\n"
+
         "Daily Nutrition Targets:\n"
-        "Calories: [total calories per day]\n"
-        "Protein: [grams] ([percentage]%)\n"
-        "Carbs: [grams] ([percentage]%)\n"
-        "Fats: [grams] ([percentage]%)\n"
-        "Fiber: [grams]\n"
-        "Sodium: [mg]\n"
-        "Calcium: [mg]\n"
-        "Iron: [mg]\n"
-        "Vitamin D: [IU]\n"
-        "Water: [liters]\n\n"
-        "Homemade Staples:\n"
-        "- staple1 (quantity/portion, how to prep or batch cook)\n- staple2 (quantity/portion, prep note)\n- staple3 (quantity/portion, prep note)\n- staple4 (quantity/portion, prep note)\n- staple5 (quantity/portion, prep note)\n- staple6 (quantity/portion, prep note)\n\n"
+        "Calories:\nProtein:\nCarbs:\nFats:\nFiber:\nWater:\n\n"
+
         "Breakfast:\n"
-        "- item1 (quantity/portion: e.g., 2 eggs, 1 cup oats, 100g chicken) - calories, protein, carbs, homemade prep note\n- item2 (quantity/portion) - calories, protein, carbs, homemade prep note\n- item3 (quantity/portion) - calories, protein, carbs, homemade prep note\n- item4 (quantity/portion) - calories, protein, carbs, homemade prep note\n- item5 (quantity/portion) - calories, protein, carbs, homemade prep note\n- item6 (quantity/portion) - calories, protein, carbs, homemade prep note\n\n"
+        "- item (qty) - kcal, protein, carbs\n"
+        "- item\n"
+        "- item\n\n"
+
         "Lunch:\n"
-        "- item1 (quantity/portion: e.g., 150g rice, 200g vegetables, 120g protein) - calories, protein, carbs, homemade prep note\n- item2 (quantity/portion) - calories, protein, carbs, homemade prep note\n- item3 (quantity/portion) - calories, protein, carbs, homemade prep note\n- item4 (quantity/portion) - calories, protein, carbs, homemade prep note\n- item5 (quantity/portion) - calories, protein, carbs, homemade prep note\n- item6 (quantity/portion) - calories, protein, carbs, homemade prep note\n\n"
+        "- item\n"
+        "- item\n"
+        "- item\n\n"
+
         "Dinner:\n"
-        "- item1 (quantity/portion: e.g., 100g protein, 1 cup vegetables, 80g carbs) - calories, protein, carbs, homemade prep note\n- item2 (quantity/portion) - calories, protein, carbs, homemade prep note\n- item3 (quantity/portion) - calories, protein, carbs, homemade prep note\n- item4 (quantity/portion) - calories, protein, carbs, homemade prep note\n- item5 (quantity/portion) - calories, protein, carbs, homemade prep note\n\n"
+        "- item\n"
+        "- item\n"
+        "- item\n\n"
+
         "Workouts:\n"
-        "- workout1\n- workout2\n- workout3\n- workout4\n- workout5\n- workout6\n\n"
-        "REQUIRED: You MUST include the 'Workouts:' section with at least 5-6 specific workout recommendations. Tailor workouts to the {goal} goal:\n"
-        "- For BULK: Focus on compound movements, progressive overload, 4-5 days/week strength training\n"
-        "- For CUT: Combine strength training with cardio, HIIT workouts, 5-6 days/week\n"
-        "- For MAINTAIN: Balanced mix of strength, cardio, and flexibility, 3-5 days/week\n"
-        "Include specific exercises like: Bench Press, Squats, Deadlifts, Running, Cycling, Yoga, etc. Be specific with exercise names.\n"
-        "Calculate macros based on {goal} goal. For bulk: surplus calories, high protein. For cut: deficit calories, high protein, lower carbs. For maintain: maintenance calories.\n"
+        "- Day 1:\n"
+        "- Day 2:\n"
+        "- Day 3:\n"
+        "- Day 4:\n"
+        "- Day 5:\n"
     ),
 )
 
@@ -344,13 +417,20 @@ prompt_template_resto = PromptTemplate(
 calorie_estimate_prompt = PromptTemplate(
     input_variables=["food_description"],
     template=(
-        "Estimate the calories and macros for this food item. Be practical and assume typical Indian home-cooked portion sizes.\n\n"
-        "Food: {food_description}\n\n"
-        "Respond in EXACTLY this format (numbers only, no extra text):\n"
-        "calories: [number]\n"
-        "protein: [number]g\n"
-        "carbs: [number]g\n"
-        "fats: [number]g\n"
+        "Estimate nutrition for a typical Indian home portion.\n\n"
+
+        "RULES:\n"
+        "- Numbers only\n"
+        "- No explanation\n"
+        "- If unclear → make best reasonable estimate\n\n"
+
+        "FOOD:\n{food_description}\n\n"
+
+        "OUTPUT (STRICT):\n"
+        "calories: <number>\n"
+        "protein: <number>\n"
+        "carbs: <number>\n"
+        "fats: <number>"
     ),
 )
 
