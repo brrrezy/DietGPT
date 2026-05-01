@@ -91,19 +91,24 @@
 {% if plans %}
 <div class="plans-grid animate-in" style="animation-delay: 250ms;">
   {% for plan in plans %}
-  <a href="/plan/{{ plan.id }}" class="plan-card">
-    <div class="plan-date">{{ plan.created_at.strftime('%b %d, %Y') if plan.created_at else '' }}</div>
-    <div class="plan-cal">
-      {% if plan.nutrition_stats and plan.nutrition_stats.calories %}{{ plan.nutrition_stats.calories }} kcal{% else %}Diet Plan{% endif %}
+    <div class="plan-card-wrapper" style="position:relative;">
+      <a href="/plan/{{ plan.id }}" class="plan-card">
+        <div class="plan-date">{{ plan.created_at.strftime('%b %d, %Y') if plan.created_at else '' }}</div>
+        <div class="plan-cal">
+          {% if plan.nutrition_stats and plan.nutrition_stats.calories %}{{ plan.nutrition_stats.calories }} kcal{% else %}Diet Plan{% endif %}
+        </div>
+        {% if plan.nutrition_stats %}
+        <div class="plan-macros">
+          {% if plan.nutrition_stats.protein %}<span style="color:var(--health-green)">{{ plan.nutrition_stats.protein }}g P</span>{% endif %}
+          {% if plan.nutrition_stats.carbs %}<span style="color:var(--health-cyan)">{{ plan.nutrition_stats.carbs }}g C</span>{% endif %}
+          {% if plan.nutrition_stats.fats %}<span style="color:var(--health-orange)">{{ plan.nutrition_stats.fats }}g F</span>{% endif %}
+        </div>
+        {% endif %}
+      </a>
+      <form action="/delete_plan/{{ plan.id }}" method="POST" style="position:absolute; top:12px; right:12px; z-index:10;" onsubmit="return confirm('Delete this protocol?');">
+        <button type="submit" class="btn-ghost" style="padding:4px; color:var(--text-dim);"><i class="ph-bold ph-trash"></i></button>
+      </form>
     </div>
-    {% if plan.nutrition_stats %}
-    <div class="plan-macros">
-      {% if plan.nutrition_stats.protein %}<span style="color:var(--health-green)">{{ plan.nutrition_stats.protein }}g P</span>{% endif %}
-      {% if plan.nutrition_stats.carbs %}<span style="color:var(--health-cyan)">{{ plan.nutrition_stats.carbs }}g C</span>{% endif %}
-      {% if plan.nutrition_stats.fats %}<span style="color:var(--health-orange)">{{ plan.nutrition_stats.fats }}g F</span>{% endif %}
-    </div>
-    {% endif %}
-  </a>
   {% endfor %}
 </div>
 {% else %}

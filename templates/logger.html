@@ -28,29 +28,43 @@
   </div>
 </div>
 
-<!-- Log Meal Form (iOS settings style) -->
-<div class="animate-in" style="margin-bottom:40px; animation-delay: 100ms;">
-  <div class="section-title">Log Data</div>
-  <div class="ios-list" style="margin-bottom:16px;">
-    <div class="ios-list-item">
-      <div class="ios-list-label">Food Item</div>
-      <input id="meal-desc" type="text" class="ios-list-value" placeholder="e.g. 2 eggs and toast" style="text-align:left;">
+<!-- Log Meal Form (Elite Performance Style) -->
+<div class="animate-in" style="margin-bottom:48px; animation-delay: 100ms;">
+  <div class="card logging-container">
+    <div class="card-header-group">
+        <h2 class="section-title" style="margin-bottom:8px;">Add Performance Entry</h2>
+        <p style="color:var(--text-dim); font-size:0.95rem; margin-bottom:24px;">Describe your meal in detail for precise AI analysis.</p>
     </div>
-    <div class="ios-list-item">
-      <div class="ios-list-label">Type</div>
-      <select id="meal-type" class="ios-list-value">
-        <option value="breakfast">Breakfast</option>
-        <option value="lunch">Lunch</option>
-        <option value="dinner">Dinner</option>
-        <option value="snack">Snack</option>
-      </select>
+    
+    <div class="ios-list" style="margin-bottom:24px;">
+      <div class="ios-list-item" style="flex-direction:column; align-items:flex-start; height:auto; padding:20px;">
+        <div class="ios-list-label" style="margin-bottom:12px; font-weight:700;">Food & Quantity Description</div>
+        <textarea id="meal-desc" class="ios-textarea" placeholder="e.g. 2 large poached eggs on whole grain sourdough toast with half an avocado and a pinch of black pepper..." style="width:100%; min-height:120px;"></textarea>
+      </div>
+      <div class="ios-list-item">
+        <div class="ios-list-label">Meal Timing</div>
+        <select id="meal-type" class="ios-list-value">
+          <option value="breakfast">Breakfast</option>
+          <option value="lunch">Lunch</option>
+          <option value="dinner">Dinner</option>
+          <option value="snack">Snack / Performance Fuel</option>
+        </select>
+      </div>
     </div>
+    
+    <button id="log-btn" class="btn btn-primary btn-block" onclick="logMeal()">
+      <i class="ph-bold ph-plus"></i> <span id="log-btn-text">Analyze & Log Meal</span>
+    </button>
+    <p id="log-status" style="margin-top:16px;font-size:0.95rem;color:var(--text-secondary);text-align:center; font-weight:500;"></p>
   </div>
-  <button id="log-btn" class="btn btn-primary" onclick="logMeal()" style="width:100%;">
-    <span id="log-btn-text">Add to Log</span>
-  </button>
-  <p id="log-status" style="margin-top:12px;font-size:0.9rem;color:var(--text-secondary);text-align:center;"></p>
 </div>
+
+<style>
+.logging-container { padding: 32px; background: var(--bg-card); border-radius: 28px; border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+.ios-textarea { background: none; border: 1px solid var(--border-color); border-radius: 16px; padding: 16px; font: inherit; color: var(--text-main); line-height: 1.6; transition: all 0.2s ease; resize: vertical; }
+.ios-textarea:focus { border-color: var(--health-blue); outline: none; background: rgba(0, 122, 255, 0.02); }
+.btn-block { width: 100%; justify-content: center; height: 56px; font-size: 1.1rem; border-radius: 16px; }
+</style>
 
 <!-- Today's Meals Timeline -->
 <div class="section-title animate-in" style="animation-delay: 150ms;">Recent Logs</div>

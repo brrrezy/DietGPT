@@ -20,7 +20,7 @@
   <div class="ios-list">
     <div class="ios-list-item">
       <div class="ios-list-label">Age</div>
-      <input name="age" type="number" class="ios-list-value" placeholder="Required" required value="{{ profile.get('age', '') if profile else '' }}">
+      <input name="age" type="number" min="1" max="120" class="ios-list-value" placeholder="Required" required value="{{ profile.get('age', '') if profile else '' }}">
     </div>
     <div class="ios-list-item">
       <div class="ios-list-label">Gender</div>
@@ -32,11 +32,16 @@
     </div>
     <div class="ios-list-item">
       <div class="ios-list-label">Weight (kg)</div>
-      <input name="weight" type="number" step="0.1" class="ios-list-value" placeholder="Required" required value="{{ profile.get('weight', '') if profile else '' }}">
+      <input name="weight" type="number" min="1" step="0.1" class="ios-list-value" placeholder="Required" required value="{{ profile.get('weight', '') if profile else '' }}">
     </div>
     <div class="ios-list-item">
-      <div class="ios-list-label">Height (ft)</div>
-      <input name="height" type="number" step="0.1" class="ios-list-value" placeholder="Required" required value="{{ profile.get('height', '') if profile else '' }}">
+      <div class="ios-list-label">Height</div>
+      <div class="ios-list-value" style="display:flex; gap:10px; align-items:center;">
+        <input name="height_ft" type="number" min="1" max="8" placeholder="Feet" required style="width:70px; text-align:right; border:none; background:none; font:inherit; color:inherit;">
+        <span style="color:var(--text-dim); font-size:0.9rem;">ft</span>
+        <input name="height_in" type="number" min="0" max="11" placeholder="Inches" required style="width:70px; text-align:right; border:none; background:none; font:inherit; color:inherit;">
+        <span style="color:var(--text-dim); font-size:0.9rem;">in</span>
+      </div>
     </div>
   </div>
 

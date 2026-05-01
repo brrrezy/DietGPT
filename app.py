@@ -308,34 +308,29 @@ chat_prompt_template = PromptTemplate(
         "current_message",
     ],
     template=(
-        "You are DietGPT — a precise, friendly nutritionist AI.\n\n"
+        "You are the DietGPT Elite Clinical Nutritionist — a world-class expert in human performance, metabolic health, and nutritional psychology.\n"
+        "Your tone is professional, authoritative, yet deeply empathetic and helpful. You are a partner in the user's health journey.\n\n"
 
-        "OBJECTIVE:\n"
-        "Give the most relevant, actionable advice using ONLY the provided data.\n\n"
+        "CORE OBJECTIVES:\n"
+        "1. Provide precise, evidence-based nutritional advice.\n"
+        "2. Leverage the provided USER PROFILE and TODAY'S MEALS to give context-aware responses.\n"
+        "3. Be encouraging but firm on health principles.\n"
+        "4. Explain the 'WHY' behind your recommendations to educate the user.\n\n"
 
-        "STRICT RULES:\n"
-        "- Output MUST be <= 50 words.\n"
-        "- Use ONLY 2–3 bullet points.\n"
-        "- NO explanations, NO reasoning steps.\n"
-        "- NO assumptions beyond given data.\n"
-        "- If data is missing → say 'insufficient data' briefly.\n"
-        "- Prioritize: (1) goal alignment (2) calorie control (3) protein adequacy.\n\n"
+        "STRICT GUIDELINES:\n"
+        "- If data is missing for a specific calculation (like TDEE), ask for it professionally.\n"
+        "- Always prioritize safety: if a user mentions symptoms, advise professional medical consultation alongside nutritional support.\n"
+        "- Keep responses concise but thorough. Avoid unnecessary fluff, but don't sacrifice helpfulness for brevity.\n"
+        "- Use clear, professional formatting (bullet points, bold text) for readability.\n\n"
 
-        "STYLE:\n"
-        "- Direct, practical, client-friendly.\n"
-        "- No fluff. No repetition.\n\n"
+        "CONTEXT DATA:\n"
+        "USER BIOMETRICS:\n{user_profile_summary}\n\n"
+        "DAILY LOG HISTORY (TODAY):\n{today_meals_summary}\n\n"
+        "CONVERSATION CONTEXT:\n{chat_history}\n\n"
 
-        "CONTEXT:\n"
-        "USER PROFILE:\n{user_profile_summary}\n\n"
-        "TODAY'S MEALS:\n{today_meals_summary}\n\n"
-        "CHAT HISTORY:\n{chat_history}\n\n"
+        "USER INQUIRY:\n{current_message}\n\n"
 
-        "USER MESSAGE:\n{current_message}\n\n"
-
-        "OUTPUT FORMAT (STRICT):\n"
-        "- point 1\n"
-        "- point 2\n"
-        "- point 3 (optional)"
+        "PROMPT RESPONSE (Professional & Helpful):"
     ),
 )
 
@@ -354,62 +349,82 @@ prompt_template_resto = PromptTemplate(
         "activity_level",
     ],
     template=(
-        "You are an expert nutritionist + fitness coach.\n\n"
+        "You are the world's most elite AI Nutritionist and Performance Coach.\n"
+        "Your mission is to craft an extraordinary, high-fidelity, bespoke health protocol that feels premium and life-changing.\n\n"
 
-        "GOAL:\n"
-        "Generate a COMPLETE diet + workout plan.\n\n"
+        "CORE PHILOSOPHY:\n"
+        "- Precision over generality.\n"
+        "- Bio-individuality: Tailor everything to the user's specific data.\n"
+        "- Sustainable Excellence: Focus on homemade, whole-food, regional ingredients.\n\n"
 
-        "STRICT RULES:\n"
-        "- MUST include BOTH diet AND workouts.\n"
-        "- Homemade food ONLY (no restaurants, packaged food).\n"
-        "- Use simple Indian cooking.\n"
-        "- Tailor strictly to goal + health conditions.\n"
-        "- Keep format EXACT.\n"
-        "- No extra text outside format.\n\n"
+        "USER BIOMETRICS & CONTEXT:\n"
+        "- Profile: {age}yo {gender}, {weight}kg, {height}ft\n"
+        "- Target: {goal} ({activity_level} activity)\n"
+        "- Health: {disease} (Allergies: {allergics})\n"
+        "- Context: {region} region, {veg_or_nonveg} {foodtype} preference\n\n"
 
-        "MACRO LOGIC:\n"
-        "- CUT → calorie deficit, high protein\n"
-        "- BULK → surplus calories\n"
-        "- MAINTAIN → maintenance calories\n\n"
+        "THE PROTOCOL (OUTPUT IN THIS EXACT FORMAT - BE DETAILED AND EXPLANATORY):\n\n"
 
-        "SUSTAINABILITY:\n"
-        "- Prefer local, seasonal foods\n"
-        "- Add 1 short eco/prep tip per section\n\n"
+        "--- MASTER NUTRITION TARGETS ---\n"
+        "Daily Calories: <number> kcal\n"
+        "Protein: <number>g\n"
+        "Carbs: <number>g\n"
+        "Fats: <number>g\n"
+        "Fiber: <number>g\n"
+        "Hydration: <number> liters\n"
+        "Elite Rationale: [Explain the macro split chosen for this specific user's goal and biometrics in 2 sentences]\n\n"
 
-        "USER DATA:\n"
-        "Age: {age}, Gender: {gender}\n"
-        "Weight: {weight}kg, Height: {height}ft\n"
-        "Diet: {veg_or_nonveg}, Goal: {goal}\n"
-        "Activity: {activity_level}\n"
-        "Disease: {disease}, Allergies: {allergics}\n"
-        "Region: {region}, Cuisine: {foodtype}\n\n"
+        "--- ELITE MEAL ARCHITECTURE ---\n\n"
 
-        "OUTPUT (STRICT FORMAT):\n\n"
-
-        "Daily Nutrition Targets:\n"
-        "Calories:\nProtein:\nCarbs:\nFats:\nFiber:\nWater:\n\n"
-
-        "Breakfast:\n"
-        "- item (qty) - kcal, protein, carbs\n"
+        "Breakfast: [Name of Dish]\n"
+        "Nutritional Strategy: [Detailed explanation of why this meal is perfect for {goal}]\n"
+        "Primary Option:\n"
+        "- item (qty) - macros\n"
         "- item\n"
-        "- item\n\n"
+        "Alternative Option:\n"
+        "- item (qty) - macros\n"
+        "- item\n"
+        "Secret Tip: [A unique culinary or performance tip]\n\n"
 
-        "Lunch:\n"
-        "- item\n"
-        "- item\n"
-        "- item\n\n"
+        "Lunch: [Name of Dish]\n"
+        "Nutritional Strategy: [Detailed explanation of why this meal is perfect for {goal}]\n"
+        "Primary Option:\n"
+        "- item (qty) - macros\n"
+        "Alternative Option:\n"
+        "- item (qty) - macros\n"
+        "Secret Tip: [A unique culinary or performance tip]\n\n"
 
-        "Dinner:\n"
-        "- item\n"
-        "- item\n"
-        "- item\n\n"
+        "Dinner: [Name of Dish]\n"
+        "Nutritional Strategy: [Detailed explanation of why this meal is perfect for {goal}]\n"
+        "Primary Option:\n"
+        "- item (qty) - macros\n"
+        "Alternative Option:\n"
+        "- item (qty) - macros\n"
+        "Secret Tip: [A unique culinary or performance tip]\n\n"
 
-        "Workouts:\n"
-        "- Day 1:\n"
-        "- Day 2:\n"
-        "- Day 3:\n"
-        "- Day 4:\n"
-        "- Day 5:\n"
+        "Staples & Performance Snacks:\n"
+        "- [Snack 1 Name]: [Detail/Why]\n"
+        "- [Snack 2 Name]: [Detail/Why]\n\n"
+
+        "--- THE PERFORMANCE WORKOUT PROTOCOL ---\n"
+        "Phase: [Bespoke Name for this Workout Phase]\n"
+        "Scientific Rationale: [Explain the training methodology used for {goal}]\n\n"
+        "Day 1: [Focus - e.g. Hypertrophy A]\n"
+        "- [Exercise 1]: [Sets] x [Reps] - [Key Form Tip]\n"
+        "- [Exercise 2]: ...\n"
+        "- [Exercise 3]: ...\n\n"
+        "Day 2: [Focus]\n"
+        "- [Exercise 1]: ...\n\n"
+        "Day 3: [Focus / Recovery]\n"
+        "- [Activity]: ...\n\n"
+        "Day 4: [Focus]\n"
+        "- [Exercise 1]: ...\n\n"
+        "Day 5: [Focus]\n"
+        "- [Exercise 1]: ...\n\n"
+
+        "--- ELITE LIFESTYLE OPTIMIZATION ---\n"
+        "Meal Prep Hack: [Detailed efficiency strategy]\n"
+        "Recovery Secret: [Bio-hack for sleep or muscle repair]\n"
     ),
 )
 
@@ -985,44 +1000,28 @@ def recommend():
 
             def extract_nutrition_stats(text):
                 stats = {}
-                calories_match = re.search(r"Calories:\s*([0-9,]+)", text, re.IGNORECASE)
-                if calories_match:
-                    stats["calories"] = calories_match.group(1).replace(",", "")
-
-                protein_match = re.search(r"Protein:\s*([0-9,]+)\s*g\s*\(([0-9]+)%\)", text, re.IGNORECASE)
-                if protein_match:
-                    stats["protein"] = protein_match.group(1).replace(",", "")
-                    stats["protein_percent"] = protein_match.group(2)
-
-                carbs_match = re.search(r"Carbs:\s*([0-9,]+)\s*g\s*\(([0-9]+)%\)", text, re.IGNORECASE)
-                if carbs_match:
-                    stats["carbs"] = carbs_match.group(1).replace(",", "")
-                    stats["carbs_percent"] = carbs_match.group(2)
-
-                fats_match = re.search(r"Fats:\s*([0-9,]+)\s*g\s*\(([0-9]+)%\)", text, re.IGNORECASE)
-                if fats_match:
-                    stats["fats"] = fats_match.group(1).replace(",", "")
-                    stats["fats_percent"] = fats_match.group(2)
-
-                fiber_match = re.search(r"Fiber:\s*([0-9,]+)\s*g", text, re.IGNORECASE)
-                if fiber_match:
-                    stats["fiber"] = fiber_match.group(1).replace(",", "")
-
-                water_match = re.search(r"Water:\s*([0-9.]+)\s*liters?", text, re.IGNORECASE)
-                if water_match:
-                    stats["water"] = water_match.group(1)
-
+                stats["calories"] = (re.findall(r"Daily Calories:\s*(\d+)", text, re.I) or ["0"])[0]
+                stats["protein"] = (re.findall(r"Protein:\s*(\d+)", text, re.I) or ["0"])[0]
+                stats["carbs"] = (re.findall(r"Carbs:\s*(\d+)", text, re.I) or ["0"])[0]
+                stats["fats"] = (re.findall(r"Fats:\s*(\d+)", text, re.I) or ["0"])[0]
+                stats["fiber"] = (re.findall(r"Fiber:\s*(\d+)", text, re.I) or ["0"])[0]
+                stats["water"] = (re.findall(r"(?:Hydration|Water):\s*([\d.]+)", text, re.I) or ["0"])[0]
+                stats["rationale"] = (re.findall(r"Elite Rationale:\s*(.*?)(?=\n\n|$)", text, re.DOTALL | re.I) or [""])[0].strip()
                 return stats
 
             nutrition_stats = extract_nutrition_stats(results_text)
 
-            homemade_staples = re.findall(r"Homemade Staples:\s*(.*?)(?=\n\n|Breakfast:|$)", results_text, re.DOTALL)
-            breakfast_names = re.findall(r"Breakfast:\s*(.*?)(?=\n\n|Lunch:|$)", results_text, re.DOTALL)
-            lunch_names = re.findall(r"Lunch:\s*(.*?)(?=\n\n|Dinner:|$)", results_text, re.DOTALL)
-            dinner_names = re.findall(r"Dinner:\s*(.*?)(?=\n\n|Workouts:|$)", results_text, re.DOTALL)
-            workout_names = re.findall(r"Workouts?:\s*(.*?)(?=\n\n|$)", results_text, re.DOTALL | re.IGNORECASE)
-            if not workout_names:
-                workout_names = re.findall(r"(?:Workout|Exercise)[s\s]*:?\s*(.*?)(?=\n\n|$)", results_text, re.DOTALL | re.IGNORECASE)
+            # Updated regex with more flexible headers to match elite format
+            homemade_staples = re.findall(r"(?:Homemade Staples|Snacks):\s*(.*?)(?=\n\n|---|$)", results_text, re.DOTALL | re.I)
+            breakfast_names = re.findall(r"Breakfast:\s*(.*?)(?=\n\n|Lunch:|$)", results_text, re.DOTALL | re.I)
+            lunch_names = re.findall(r"Lunch:\s*(.*?)(?=\n\n|Dinner:|$)", results_text, re.DOTALL | re.I)
+            dinner_names = re.findall(r"Dinner:\s*(.*?)(?=\n\n|---|$)", results_text, re.DOTALL | re.I)
+            workout_names = re.findall(r"(?:Workouts?|Performance Workout Protocol):\s*(.*?)(?=\n\n|---|$)", results_text, re.DOTALL | re.I)
+
+            # Extract Elite Tips
+            performance_secrets = re.findall(r"\[Chef's Performance Secret\]:\s*(.*?)(?=\n|$)", results_text, re.I)
+            meal_prep_hack = (re.findall(r"Meal Prep Hack:\s*(.*?)(?=\n|$)", results_text, re.I) or [""])[0]
+            recovery_secret = (re.findall(r"Recovery Secret:\s*(.*?)(?=\n|$)", results_text, re.I) or [""])[0]
 
             homemade_staples = clean_list(homemade_staples[0]) if homemade_staples else []
             breakfast_names = clean_list(breakfast_names[0]) if breakfast_names else []
@@ -1043,11 +1042,14 @@ def recommend():
                     {
                         "plan_text": results_text,
                         "nutrition_stats": nutrition_stats,
-                        "homemade_staples": homemade_staples,
-                        "breakfast_names": breakfast_names,
-                        "lunch_names": lunch_names,
-                        "dinner_names": dinner_names,
-                        "workout_names": workout_names,
+                        "breakfast": breakfast_data,
+                        "lunch": lunch_data,
+                        "dinner": dinner_data,
+                        "workout_rationale": workout_rationale,
+                        "workout_days": workout_days,
+                        "staples_text": staples_block,
+                        "meal_prep_hack": meal_prep_hack,
+                        "recovery_secret": recovery_secret,
                         "created_at": datetime.now(timezone.utc).replace(tzinfo=None),
                     }
                 )
@@ -1073,12 +1075,15 @@ def recommend():
 
             return render_template(
                 "result.html",
-                homemade_staples=homemade_staples,
-                breakfast_names=breakfast_names,
-                lunch_names=lunch_names,
-                dinner_names=dinner_names,
-                workout_names=workout_names,
                 nutrition_stats=nutrition_stats,
+                breakfast=breakfast_data,
+                lunch=lunch_data,
+                dinner=dinner_data,
+                workout_rationale=workout_rationale,
+                workout_days=workout_days,
+                staples_text=staples_block,
+                meal_prep_hack=meal_prep_hack,
+                recovery_secret=recovery_secret,
                 base_url=BASE_URL,
                 user=user,
             )
