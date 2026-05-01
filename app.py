@@ -1000,69 +1000,58 @@ def recommend():
                 stats["fats"] = (re.findall(r"Fats:\s*(\d+)", text, re.I) or ["0"])[0]
                 stats["fiber"] = (re.findall(r"Fiber:\s*(\d+)", text, re.I) or ["0"])[0]
                 stats["water"] = (re.findall(r"(?:Hydration|Water):\s*([\d.]+)", text, re.I) or ["0"])[0]
-                stats["rationale"] = (re.findall(r"Elite Rationale:\s*(.*?)(?=\n\n|$)", text, re.DOTALL | re.I) or [""])[0].strip()
+                stats["rationale"] = (re.findall(r"Plan Rationale:\s*(.*?)(?=\n\n|$)", text, re.DOTALL | re.I) or [""])[0].strip()
                 return stats
 
             nutrition_stats = extract_nutrition_stats(results_text)
 
-            # Updated regex with more flexible headers to match elite format
-            homemade_staples = re.findall(r"(?:Homemade Staples|Snacks):\s*(.*?)(?=\n\n|---|$)", results_text, re.DOTALL | re.I)
-            breakfast_names = re.findall(r"Breakfast:\s*(.*?)(?=\n\n|Lunch:|$)", results_text, re.DOTALL | re.I)
-            lunch_names = re.findall(r"Lunch:\s*(.*?)(?=\n\n|Dinner:|$)", results_text, re.DOTALL | re.I)
-            dinner_names = re.findall(r"Dinner:\s*(.*?)(?=\n\n|---|$)", results_text, re.DOTALL | re.I)
-            workout_names = re.findall(r"(?:Workouts?|Performance Workout Protocol):\s*(.*?)(?=\n\n|---|$)", results_text, re.DOTALL | re.I)
+            def parse_meal(meal_name, text):
+                pattern = rf"{meal_name}:\s*(.*?)\nWhy this meal:\s*(.*?)\nPrimary Option:\s*(.*?)\nAlternative Option:\s*(.*?)\nQuick Tip:\s*(.*?)(?=\n\n|$)"
+                match = re.search(pattern, text, re.DOTALL | re.I)
+                if match:
+                    return {
+                        "title": match.group(1).strip(),
+                        "strategy": match.group(2).strip(),
+                        "primary": match.group(3).strip(),
+                        "alternative": match.group(4).strip(),
+                        "secret": match.group(5).strip()
+                    }
+                return {"title": "", "strategy": "", "primary": "", "alternative": "", "secret": ""}
 
-            # Extract Elite Tips
-            performance_secrets = re.findall(r"\[Chef's Performance Secret\]:\s*(.*?)(?=\n|$)", results_text, re.I)
-            meal_prep_hack = (re.findall(r"Meal Prep Hack:\s*(.*?)(?=\n|$)", results_text, re.I) or [""])[0]
-            recovery_secret = (re.findall(r"Recovery Secret:\s*(.*?)(?=\n|$)", results_text, re.I) or [""])[0]
+            breakfast_data = parse_meal("Breakfast", results_text)
+            lunch_data = parse_meal("Lunch", results_text)
+            dinner_data = parse_meal("Dinner", results_text)
 
-            homemade_staples = clean_list(homemade_staples[0]) if homemade_staples else []
-            breakfast_names = clean_list(breakfast_names[0]) if breakfast_names else []
-            lunch_names = clean_list(lunch_names[0]) if lunch_names else []
-            dinner_names = clean_list(dinner_names[0]) if dinner_names else []
-            workout_names = clean_list(workout_names[0]) if workout_names else []
+            staples_block = (re.findall(r"Snacks & Staples:\s*(.*?)(?=\n\n|---|$)", results_text, re.DOTALL | re.I) or [""])[0].strip()
+            
+            workout_rationale = (re.findall(r"Goal Strategy:\s*(.*?)(?=\n\n|$)", results_text, re.DOTALL | re.I) or [""])[0].strip()
+            workout_days = re.findall(r"(Day \d+:.*?)(?=\n\nDay \d+:|---|$)", results_text, re.DOTALL | re.I)
+
+            meal_prep_hack = (re.findall(r"Meal Prep Tip:\s*(.*?)(?=\n|$)", results_text, re.I) or [""])[0].strip()
+            recovery_secret = (re.findall(r"Recovery Tip:\s*(.*?)(?=\n|$)", results_text, re.I) or [""])[0].strip()
 
             user = current_user()
             if user:
                 # Save plan
-                plan_ref = (
-                    firestore_db.collection("users")
-                    .document(user["id"])
-                    .collection("plans")
-                    .document()
-                )
-                plan_ref.set(
-                    {
-                        "plan_text": results_text,
-                        "nutrition_stats": nutrition_stats,
-                        "breakfast": breakfast_data,
-                        "lunch": lunch_data,
-                        "dinner": dinner_data,
-                        "workout_rationale": workout_rationale,
-                        "workout_days": workout_days,
-                        "staples_text": staples_block,
-                        "meal_prep_hack": meal_prep_hack,
-                        "recovery_secret": recovery_secret,
-                        "created_at": datetime.now(timezone.utc).replace(tzinfo=None),
-                    }
-                )
-                # Auto-update profile with plan data
+                plan_ref = firestore_db.collection("users").document(user["id"]).collection("plans").document()
+                plan_ref.set({
+                    "plan_text": results_text,
+                    "nutrition_stats": nutrition_stats,
+                    "breakfast": breakfast_data,
+                    "lunch": lunch_data,
+                    "dinner": dinner_data,
+                    "workout_rationale": workout_rationale,
+                    "workout_days": workout_days,
+                    "staples_text": staples_block,
+                    "meal_prep_hack": meal_prep_hack,
+                    "recovery_secret": recovery_secret,
+                    "created_at": datetime.now(timezone.utc).replace(tzinfo=None),
+                })
+                # Auto-update profile
                 profile_update = {"goal": goal, "activity_level": activity_level}
-                if weight:
-                    profile_update["weight"] = weight
-                if height:
-                    profile_update["height"] = height
-                if age:
-                    profile_update["age"] = age
-                if gender:
-                    profile_update["gender"] = gender
-                if veg_or_nonveg:
-                    profile_update["diet_pref"] = veg_or_nonveg
-                if region:
-                    profile_update["region"] = region
-                if allergics and allergics != "none":
-                    profile_update["allergies"] = allergics
+                if weight: profile_update["weight"] = weight
+                if height: profile_update["height"] = height
+                if age: profile_update["age"] = age
                 if nutrition_stats.get("calories"):
                     profile_update["target_calories"] = nutrition_stats["calories"]
                 save_user_profile(user["id"], profile_update)
