@@ -8,13 +8,13 @@
   <p>Added to your active plans.</p>
 </div>
 
-<!-- Elite Rationale Overview -->
+<!-- Rationale Overview -->
 {% if nutrition_stats.rationale %}
 <div class="rationale-banner animate-in" style="animation-delay: 100ms; margin-bottom: 32px;">
     <div class="rationale-content">
         <div class="rationale-header">
             <i class="ph-fill ph-brain" style="color:var(--health-purple)"></i>
-            <h3>The Elite Strategy</h3>
+            <h3>Meal Plan Strategy</h3>
         </div>
         <p>{{ nutrition_stats.rationale }}</p>
     </div>
@@ -27,7 +27,7 @@
   <div class="stat-card">
     <div class="stat-header">
       <i class="ph-fill ph-flame" style="color:var(--health-red)"></i>
-      <span>Energy Target</span>
+      <span>Calories</span>
     </div>
     <div class="stat-value c-cal">{{ nutrition_stats.calories }} <span class="stat-unit">kcal</span></div>
   </div>
@@ -48,16 +48,16 @@
   <div class="stat-card">
     <div class="stat-header">
       <i class="ph-fill ph-circle" style="color:var(--health-orange)"></i>
-      <span>Essential Fats</span>
+      <span>Fats</span>
     </div>
     <div class="stat-value c-fat">{{ nutrition_stats.fats }}<span class="stat-unit">g</span></div>
   </div>
 </div>
 {% endif %}
 
-<!-- Elite Meal Architecture -->
+<!-- Meal Plan -->
 <div class="plan-architecture animate-in" style="animation-delay: 200ms;">
-  <h2 class="section-title">Elite Meal Architecture</h2>
+  <h2 class="section-title">Meal Plan</h2>
   
   <div class="detailed-meal-flow">
     {% for meal_id, meal_data in [('breakfast', breakfast), ('lunch', lunch), ('dinner', dinner)] %}
@@ -77,19 +77,35 @@
 
         {% if meal_data.strategy %}
         <div class="strategy-box">
-            <strong><i class="ph-bold ph-info"></i> Nutritional Strategy:</strong>
+            <strong>Description:</strong>
             <p>{{ meal_data.strategy }}</p>
         </div>
         {% endif %}
 
         <div class="options-grid">
             <div class="option-block primary">
-                <div class="option-header"><i class="ph-fill ph-star"></i> Primary Selection</div>
-                <div class="option-content">{{ meal_data.primary | replace('\n', '<br>') | safe }}</div>
+                <div class="option-header"><i class="ph-fill ph-star"></i> Option 1</div>
+                <div class="option-content">
+                    <ul class="option-list">
+                        {% for line in meal_data.primary.split('\n') %}
+                            {% if line.strip() %}
+                                <li>{{ line.strip('- ') }}</li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
             </div>
             <div class="option-block alternative">
-                <div class="option-header"><i class="ph-bold ph-shuffle"></i> Elite Alternative</div>
-                <div class="option-content">{{ meal_data.alternative | replace('\n', '<br>') | safe }}</div>
+                <div class="option-header"><i class="ph-bold ph-shuffle"></i> Option 2</div>
+                <div class="option-content">
+                    <ul class="option-list">
+                        {% for line in meal_data.alternative.split('\n') %}
+                            {% if line.strip() %}
+                                <li>{{ line.strip('- ') }}</li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
             </div>
         </div>
 
@@ -105,24 +121,36 @@
   </div>
 
   {% if staples_text %}
-  <div class="plan-data-section animate-in" style="margin-top: 32px;">
-    <h3><i class="ph-bold ph-cookie"></i> Performance Staples & Snacks</h3>
-    <div class="staples-content card">
-        {{ staples_text | replace('\n', '<br>') | safe }}
+  <div class="plan-data-section animate-in" style="margin-top: 40px;">
+    <h3 class="section-subtitle"><i class="ph-bold ph-cookie"></i> Snacks</h3>
+    <div class="staples-content card doc-style">
+        <ul class="option-list">
+            {% for line in staples_text.split('\n') %}
+                {% if line.strip() %}
+                    <li>{{ line.strip('- ') }}</li>
+                {% endif %}
+            {% endfor %}
+        </ul>
     </div>
   </div>
   {% endif %}
 
   {% if workout_days %}
-  <div class="plan-data-section workout-section animate-in" style="margin-top: 32px;">
+  <div class="plan-data-section workout-section animate-in" style="margin-top: 40px;">
     <div class="workout-header-group">
-        <h3><i class="ph-bold ph-lightning"></i> Performance Workout Protocol</h3>
+        <h3 class="section-subtitle"><i class="ph-bold ph-lightning"></i> Workout Plan</h3>
         <p class="workout-rationale">{{ workout_rationale }}</p>
     </div>
     <div class="workout-protocol-grid">
         {% for day in workout_days %}
-        <div class="workout-day-card">
-            {{ day | replace('\n', '<br>') | safe }}
+        <div class="workout-day-card doc-style">
+            {% for line in day.split('\n') %}
+                {% if line.strip() %}
+                    <div class="workout-line {% if 'Day' in line %}day-header{% endif %}">
+                        {{ line.strip('- ') }}
+                    </div>
+                {% endif %}
+            {% endfor %}
         </div>
         {% endfor %}
     </div>
@@ -130,24 +158,24 @@
   {% endif %}
 </div>
 
-<!-- Lifestyle Optimization -->
+<!-- Extra Tips -->
 {% if meal_prep_hack or recovery_secret %}
 <div class="elite-optimization-section animate-in" style="animation-delay: 250ms; margin-top: 40px;">
     <div class="optimization-card">
         <div class="optimization-header">
             <i class="ph-fill ph-sparkle" style="color:var(--health-yellow)"></i>
-            <h3>Elite Lifestyle Optimization</h3>
+            <h3>Extra Tips</h3>
         </div>
         <div class="optimization-grid">
             {% if meal_prep_hack %}
             <div class="opt-item">
-                <strong><i class="ph-bold ph-knife"></i> Prep Strategy:</strong>
+                <strong>Prep Tip:</strong>
                 <p>{{ meal_prep_hack }}</p>
             </div>
             {% endif %}
             {% if recovery_secret %}
             <div class="opt-item">
-                <strong><i class="ph-bold ph-moon"></i> Recovery Bio-hack:</strong>
+                <strong>Recovery Tip:</strong>
                 <p>{{ recovery_secret }}</p>
             </div>
             {% endif %}
@@ -157,8 +185,8 @@
 {% endif %}
 
 <div class="animate-in" style="margin-top:48px;display:flex;gap:16px; animation-delay: 300ms; padding-bottom: 60px;">
-  <a href="/dashboard" class="btn btn-primary">Commit to Plan</a>
-  <a href="/plan/new" class="btn btn-secondary">Refine Protocol</a>
+  <a href="/plan/new" class="btn btn-secondary"><i class="ph-bold ph-arrow-left"></i> Back</a>
+  <a href="/dashboard" class="btn btn-primary">Save Plan</a>
 </div>
 
 <style>

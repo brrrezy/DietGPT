@@ -28,32 +28,32 @@
   </div>
 </div>
 
-<!-- Log Meal Form (Elite Performance Style) -->
+<!-- Log Meal Form -->
 <div class="animate-in" style="margin-bottom:48px; animation-delay: 100ms;">
   <div class="card logging-container">
     <div class="card-header-group">
-        <h2 class="section-title" style="margin-bottom:8px;">Add Performance Entry</h2>
-        <p style="color:var(--text-dim); font-size:0.95rem; margin-bottom:24px;">Describe your meal in detail for precise AI analysis.</p>
+        <h2 class="section-title" style="margin-bottom:8px;">Add Meal Entry</h2>
+        <p style="color:var(--text-dim); font-size:0.95rem; margin-bottom:24px;">Describe your meal for AI analysis.</p>
     </div>
     
     <div class="ios-list" style="margin-bottom:24px;">
       <div class="ios-list-item" style="flex-direction:column; align-items:flex-start; height:auto; padding:20px;">
-        <div class="ios-list-label" style="margin-bottom:12px; font-weight:700;">Food & Quantity Description</div>
-        <textarea id="meal-desc" class="ios-textarea" placeholder="e.g. 2 large poached eggs on whole grain sourdough toast with half an avocado and a pinch of black pepper..." style="width:100%; min-height:120px;"></textarea>
+        <div class="ios-list-label" style="margin-bottom:12px; font-weight:700;">Meal Description</div>
+        <textarea id="meal-desc" class="ios-textarea" placeholder="e.g. 2 poached eggs on toast with half an avocado..." style="width:100%; min-height:120px;"></textarea>
       </div>
       <div class="ios-list-item">
-        <div class="ios-list-label">Meal Timing</div>
+        <div class="ios-list-label">Timing</div>
         <select id="meal-type" class="ios-list-value">
           <option value="breakfast">Breakfast</option>
           <option value="lunch">Lunch</option>
           <option value="dinner">Dinner</option>
-          <option value="snack">Snack / Performance Fuel</option>
+          <option value="snack">Snack</option>
         </select>
       </div>
     </div>
     
     <button id="log-btn" class="btn btn-primary btn-block" onclick="logMeal()">
-      <i class="ph-bold ph-plus"></i> <span id="log-btn-text">Analyze & Log Meal</span>
+      <i class="ph-bold ph-plus"></i> <span id="log-btn-text">Log Meal</span>
     </button>
     <p id="log-status" style="margin-top:16px;font-size:0.95rem;color:var(--text-secondary);text-align:center; font-weight:500;"></p>
   </div>
